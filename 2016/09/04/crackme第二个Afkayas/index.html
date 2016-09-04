@@ -15,7 +15,7 @@
 	})();
 	</script>
   
-  <title>归档 | HEADS43</title>
+  <title>crackme第二个Afkayas | HEADS43</title>
   <meta name="author" content="HEADS43">
   
   <meta name="description" content="One To One,then many a you !">
@@ -23,7 +23,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="crackme第二个Afkayas"/>
   <meta property="og:site_name" content="HEADS43"/>
 
   
@@ -64,34 +64,117 @@
 </div>
 </header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-<h2 class="archive-title">归档</h2>
-
-<div class="archive">
-
-  <article class="post">
-	<div class="post-content">
-	  <header>
-		<time datetime="2016-09-04T08:12:31.000Z"><a href="/2016/09/04/crackme第二个Afkayas/">2016-09-04</a></time>
-		
-		  <h1 class="title"><a href="/2016/09/04/crackme第二个Afkayas/">crackme第二个Afkayas</a></h1>
-		
-	  </header>
-	</div>
-  </article>
-
-  <article class="post">
-	<div class="post-content">
-	  <header>
-		<time datetime="2016-09-04T06:22:59.584Z"><a href="/2016/09/04/hello-world/">2016-09-04</a></time>
-		
-		  <h1 class="title"><a href="/2016/09/04/hello-world/">Hello World</a></h1>
-		
-	  </header>
-	</div>
-  </article>
-
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
 </div>
+  
+  <div class="post-content">
+    <header class="article-info clearfix">
+  <h1 itemprop="name">
+	crackme第二个Afkayas
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://lc.dropsec.xyz" title="HEADS43">HEADS43</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-09-04T08:12:31.000Z" itemprop="datePublished">2016-09-04</time>
+    更新日期:<time datetime="2016-09-04T08:14:38.137Z" itemprop="dateModified">2016-09-04</time>
+    
+  </p>
+</header>
+    <div class="entry">
+		
+        <h1 id="破解程序-160个crackme第二个Afkayas"><a href="#破解程序-160个crackme第二个Afkayas" class="headerlink" title="破解程序:160个crackme第二个Afkayas"></a>破解程序:160个crackme第二个Afkayas</h1><p><strong>使用工具：OD或者加上IDA</strong></p>
+<p>（1）使用OD载入，运行了一通，发现是通过调用窗口函数进行验证，于是寻找调用窗口函数就成了重点，可以使用Ctrl+G直接跟踪函数GetDlgItemTextA到调用处，然后找到关键跳转，Nop掉即可。<br>（2）使用OD载入，直接右键，中文搜索引擎，智能搜索，找到关键提示“you get it ”,顺着线索找到对应的地址就能发现关键跳转，同样Nop掉即可。<br>（3）先用IDA载入，由破解CKME经验，通常在IDA中有关键提示，然后就上下求索，最终黄天不负有心人，同样找到关键提示：“you get it”，由于IDA是静态分析软件，再打开OD载入，先直接找相应地址发现找不到，明白一个道理，IDA中的地址和OD中的不一定是对应的，然后就是通过寻找关键命令的方式进行查找，最后在OD中找到相应位置，顺藤摸瓜找到跳转修改即可。<br>总结：三种方法中，第一种就是常规方法没什么说的。第三种的话是在破解cracme第四题经验上做的，其实也不算经验，就是一般在IDA中会有一些关键提示，通过这些提示就能摸索出关键的跳转或者其他的命令，这是最蠢的方法，还不定能找出来，所以不建议轻易使用。而第二种方法也算是很小白的方法吧，属于凑巧，但也不失为一种便捷的方法</p>
+
+    </div>
+    <footer>
+        
+        
+		<div class="bdsharebuttonbox">
+	<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+	<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a>
+	<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+	<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="bds_more" data-cmd="more"></a>
+	<a href="#" class="bds_count" data-cmd="count"></a>
+</div>
+<script>
+window._bd_share_config=
+{
+	"common":{
+		"bdSnsKey":{},
+		"bdText":"",
+		"bdMini":"2",
+		"bdMiniList":false,
+		"bdPic":"",
+		"bdStyle":"0",
+		"bdSize":"24"
+	},
+	"share":{},
+	"image":{
+		"viewList":["qzone","tsina","tqq","renren","weixin","fbook","twi"],
+		"viewText":"分享到：",
+		"viewSize":"24"
+	},
+	"selectShare":{
+		"bdContainerClass":null,
+		"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin","fbook","twi"]
+	}
+};
+with(document)0[
+	(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)
+];
+</script>    
+        <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+ <nav id="pagination" >
+    
+    
+    <a href="/2016/09/04/hello-world/" class="alignright next" title="Hello World">Hello World</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+
+
+	
+	<section id="comment">
+		<!-- 多说评论框 start -->
+		<div class="ds-thread" data-thread-key="2016/09/04/crackme第二个Afkayas/" data-title="crackme第二个Afkayas" data-url="http://lc.dropsec.xyz/2016/09/04/crackme第二个Afkayas/"></div>
+		<!-- 多说评论框 end -->
+		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+		<script type="text/javascript">
+		var duoshuoQuery = {short_name:""};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+			 || document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+		</script>
+		<!-- 多说公共JS代码 end -->
+	</section>
+	
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
