@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>crackme第二个Afkayas | 追客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/app.css">
+  <!-- <link rel='stylesheet' href='http://fonts.useso.com/css?family=Source+Code+Pro'> -->
+</head>
+
+<body>
+  <nav class="app-nav">
+  
+    
+      <a href="/.">home</a>
+    
+  
+    
+      <a href="/archives">archive</a>
+    
+  
+    
+      <a href="/about">about</a>
+    
+  
+    
+      <a href="/atom.xml">rss</a>
+    
+  
+</nav>
+
+  <main class="post">
+  <article>
+  <h1 class="article-title">
+    <a href="/2016/09/04/crackme第二个Afkayas/">crackme第二个Afkayas</a>
+  </h1>
+
+  <section class="article-meta">
+    <p class="article-date">九月 04 2016</p>
+  </section>
+
+  <section class="article-entry">
+    <h1 id="破解程序-160个crackme第二个Afkayas"><a href="#破解程序-160个crackme第二个Afkayas" class="headerlink" title="破解程序:160个crackme第二个Afkayas"></a>破解程序:160个crackme第二个Afkayas</h1><p><strong>使用工具：OD或者加上IDA</strong></p>
+<p>（1）使用OD载入，运行了一通，发现是通过调用窗口函数进行验证，于是寻找调用窗口函数就成了重点，可以使用Ctrl+G直接跟踪函数GetDlgItemTextA到调用处，然后找到关键跳转，Nop掉即可。<br>（2）使用OD载入，直接右键，中文搜索引擎，智能搜索，找到关键提示“you get it ”,顺着线索找到对应的地址就能发现关键跳转，同样Nop掉即可。<br>（3）先用IDA载入，由破解CKME经验，通常在IDA中有关键提示，然后就上下求索，最终黄天不负有心人，同样找到关键提示：“you get it”，由于IDA是静态分析软件，再打开OD载入，先直接找相应地址发现找不到，明白一个道理，IDA中的地址和OD中的不一定是对应的，然后就是通过寻找关键命令的方式进行查找，最后在OD中找到相应位置，顺藤摸瓜找到跳转修改即可。<br>总结：三种方法中，第一种就是常规方法没什么说的。第三种的话是在破解cracme第四题经验上做的，其实也不算经验，就是一般在IDA中会有一些关键提示，通过这些提示就能摸索出关键的跳转或者其他的命令，这是最蠢的方法，还不定能找出来，所以不建议轻易使用。而第二种方法也算是很小白的方法吧，属于凑巧，但也不失为一种便捷的方法</p>
+
+  </section>
+</article>
+
+  <div class="sharing grid">
+  <section class="profile grid-item grid">
+    <img class="avatar" src="http://7xrcp8.com1.z0.glb.clouddn.com/avatar.png" alt="avatar" />
+    <div class="grid-item">
+      <p class="title"> 追客 </p>
+      <p class="subtitle"> You are the JavaScript in my HTML </p>
+    <div>
+  </section>
+
+  <section class="share-btns">
+    <!-- <p> share it if you like it~ </p> -->
+    <a
+  class="twitter-share-button"
+  data-size="large"
+  data-via="DrakeLeung"
+  href="https://twitter.com/intent/tweet?text= id="破解程序-160个crackm"
+>
+  Tweet
+</a>
+
+<script>
+  window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  js.async = true;
+  fjs.parentNode.insertBefore(js, fjs);
+
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+
+  return t;
+}(document, "script", "twitter-wjs"));
+</script>
+
+  </section>
+</div>
+
+
+  
+    
+<section class="article-comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+<script>
+  var disqus_shortname = 'drakeleung';
+  
+  var disqus_url = 'http://lc.dropsec.xyz/2016/09/04/crackme第二个Afkayas/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+  
+</main>
+
+</body>
+</html>
