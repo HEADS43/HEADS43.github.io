@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script type="text/javascript" src="http://tajs.qq.com/stats?sId=44218032" charset="UTF-8"></script>
+  <script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "//hm.baidu.com/hm.js?7192fa361f5cabb11d8a22de41c1ba8f";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+  
+  <title>crackme第二个Afkayas | HEADS43</title>
+  <meta name="author" content="HEADS43">
+  
+  <meta name="description" content="One To One,then many a you !">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="crackme第二个Afkayas"/>
+  <meta property="og:site_name" content="HEADS43"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/imgs/favicon.ico" rel="icon" type="image/x-ico">
+  <link rel="alternate" href="/atom.xml" title="HEADS43" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="//libs.baidu.com/jquery/1.8.0/jquery.min.js"></script>
+</head>
+
+
+<body>
+  <header><div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/imgs/logo.png" alt="HEADS43" title="HEADS43"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name">HEADS43</h1>
+				<h2 class="blog-motto">One To One,then many a you !</h2>
+			</div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li> <a href="/atom.xml">RSS</a> </li>
+				</ul>
+			</nav>			
+</div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header class="article-info clearfix">
+  <h1 itemprop="name">
+	crackme第二个Afkayas
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://lc.dropsec.xyz" title="HEADS43">HEADS43</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-09-04T08:12:31.000Z" itemprop="datePublished">2016-09-04</time>
+    更新日期:<time datetime="2016-09-04T08:14:38.137Z" itemprop="dateModified">2016-09-04</time>
+    
+  </p>
+</header>
+    <div class="entry">
+		
+        <h1 id="破解程序-160个crackme第二个Afkayas"><a href="#破解程序-160个crackme第二个Afkayas" class="headerlink" title="破解程序:160个crackme第二个Afkayas"></a>破解程序:160个crackme第二个Afkayas</h1><p><strong>使用工具：OD或者加上IDA</strong></p>
+<p>（1）使用OD载入，运行了一通，发现是通过调用窗口函数进行验证，于是寻找调用窗口函数就成了重点，可以使用Ctrl+G直接跟踪函数GetDlgItemTextA到调用处，然后找到关键跳转，Nop掉即可。<br>（2）使用OD载入，直接右键，中文搜索引擎，智能搜索，找到关键提示“you get it ”,顺着线索找到对应的地址就能发现关键跳转，同样Nop掉即可。<br>（3）先用IDA载入，由破解CKME经验，通常在IDA中有关键提示，然后就上下求索，最终黄天不负有心人，同样找到关键提示：“you get it”，由于IDA是静态分析软件，再打开OD载入，先直接找相应地址发现找不到，明白一个道理，IDA中的地址和OD中的不一定是对应的，然后就是通过寻找关键命令的方式进行查找，最后在OD中找到相应位置，顺藤摸瓜找到跳转修改即可。<br>总结：三种方法中，第一种就是常规方法没什么说的。第三种的话是在破解cracme第四题经验上做的，其实也不算经验，就是一般在IDA中会有一些关键提示，通过这些提示就能摸索出关键的跳转或者其他的命令，这是最蠢的方法，还不定能找出来，所以不建议轻易使用。而第二种方法也算是很小白的方法吧，属于凑巧，但也不失为一种便捷的方法</p>
+
+    </div>
+    <footer>
+        
+        
+		<div class="bdsharebuttonbox">
+	<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+	<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a>
+	<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+	<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="bds_more" data-cmd="more"></a>
+	<a href="#" class="bds_count" data-cmd="count"></a>
+</div>
+<script>
+window._bd_share_config=
+{
+	"common":{
+		"bdSnsKey":{},
+		"bdText":"",
+		"bdMini":"2",
+		"bdMiniList":false,
+		"bdPic":"",
+		"bdStyle":"0",
+		"bdSize":"24"
+	},
+	"share":{},
+	"image":{
+		"viewList":["qzone","tsina","tqq","renren","weixin","fbook","twi"],
+		"viewText":"分享到：",
+		"viewSize":"24"
+	},
+	"selectShare":{
+		"bdContainerClass":null,
+		"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin","fbook","twi"]
+	}
+};
+with(document)0[
+	(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)
+];
+</script>    
+        <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+ <nav id="pagination" >
+    
+    
+    <a href="/2016/09/04/hello-world/" class="alignright next" title="Hello World">Hello World</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+
+
+	
+	<section id="comment">
+		<!-- 多说评论框 start -->
+		<div class="ds-thread" data-thread-key="2016/09/04/crackme第二个Afkayas/" data-title="crackme第二个Afkayas" data-url="http://lc.dropsec.xyz/2016/09/04/crackme第二个Afkayas/"></div>
+		<!-- 多说评论框 end -->
+		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+		<script type="text/javascript">
+		var duoshuoQuery = {short_name:""};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+			 || document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+		</script>
+		<!-- 多说公共JS代码 end -->
+	</section>
+	
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:lc.dropsec.xyz">
+  </form>
+</div>
+
+  
+
+  
+
+  <iframe width="100%" height="140" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1923610190&verifier=6af5ad6a&colors=fafafa,fafafa,666666,0082cb,ecfbfd&dpc=1"></iframe>
+
+  <div class="widget tag">
+<h3 class="title">友情链接</h3>
+<ul class="entry">
+<li><a href="http://opiece.me" title="Chillax's Blog" target="_blank">Chillax</a></li>
+</ul>
+</div>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer"><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hi,I&#39;m the designer of this theme. <br/>
+			You can download this theme on my github.</p>
+	</section>
+	 
+	<div class="social-font clearfix">
+		
+		<a href="http://weibo.com/1923610190" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/huangjunhui" target="_blank" title="github"></a>
+		
+		
+		<a href="https://www.facebook.com/huangjunhui" target="_blank" title="facebook"></a>
+		
+		
+		
+		<a href="mailto:jhhuang1993@foxmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/huangjunhui/concise" target="_blank" title="Concise">Concise</a> © 2016 
+		
+		<a href="http://lc.dropsec.xyz/about" target="_blank" title="HEADS43">HEADS43</a>
+		
+		</p>
+</div>
+</footer>
+  <script src="//libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/counter.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+<div id="totop" style="position:fixed;bottom:100px;right:10px;cursor: pointer;">
+<a title="返回顶部"><img src="/imgs/scrollup.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
+
+
