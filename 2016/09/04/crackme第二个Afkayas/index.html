@@ -1,121 +1,342 @@
-<!DOCTYPE html>
-<html>
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <title>crackme第二个Afkayas | 追客</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <link rel="shortcut icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/css/app.css">
-  <!-- <link rel='stylesheet' href='http://fonts.useso.com/css?family=Source+Code+Pro'> -->
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="HEADS43">
+  
+  
+  
+  
+    <meta name="description" content="破解程序:160个crackme第二个Afkayas使用工具：OD或者加上IDA
+（1）使用OD载入，运行了一通，发现是通过调用窗口函数进行验证，于是寻找调用窗口函数就成了重点，可以使用Ctrl+G直接跟踪函数GetDlgItemTextA到调用处，然后找到关键跳转，Nop掉即可。（2）使用OD载入，直接右键，中文搜索引擎，智能搜索，找到关键提示“you get it ”,顺着线索找到对应的...">
+  
+  <title>crackme第二个Afkayas [ HEADS43 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="HEADS43">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
 </head>
 
 <body>
-  <nav class="app-nav">
+<div class="side-navigate hide-area">
   
-    
-      <a href="/.">home</a>
-    
   
-    
-      <a href="/archives">archive</a>
-    
+    <div class="item next">
+      <a href="/2016/09/04/hello-world/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Hello World
+      </div>
+    </div>
   
-    
-      <a href="/about">about</a>
-    
-  
-    
-      <a href="/atom.xml">rss</a>
-    
-  
-</nav>
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">HEADS43</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">Home</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">Archives</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">Tags</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">Categories</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">About</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="https://github.com/stiekel/hexo-theme-random">Github</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
 
-  <main class="post">
-  <article>
-  <h1 class="article-title">
-    <a href="/2016/09/04/crackme第二个Afkayas/">crackme第二个Afkayas</a>
-  </h1>
-
-  <section class="article-meta">
-    <p class="article-date">九月 04 2016</p>
-  </section>
-
-  <section class="article-entry">
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>crackme第二个Afkayas</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2016-09-04</span>
+      
+        <span id = "post-title-updated">修改于 2016-09-04</span>
+      
+      
+      
+    </p>
+    
     <h1 id="破解程序-160个crackme第二个Afkayas"><a href="#破解程序-160个crackme第二个Afkayas" class="headerlink" title="破解程序:160个crackme第二个Afkayas"></a>破解程序:160个crackme第二个Afkayas</h1><p><strong>使用工具：OD或者加上IDA</strong></p>
 <p>（1）使用OD载入，运行了一通，发现是通过调用窗口函数进行验证，于是寻找调用窗口函数就成了重点，可以使用Ctrl+G直接跟踪函数GetDlgItemTextA到调用处，然后找到关键跳转，Nop掉即可。<br>（2）使用OD载入，直接右键，中文搜索引擎，智能搜索，找到关键提示“you get it ”,顺着线索找到对应的地址就能发现关键跳转，同样Nop掉即可。<br>（3）先用IDA载入，由破解CKME经验，通常在IDA中有关键提示，然后就上下求索，最终黄天不负有心人，同样找到关键提示：“you get it”，由于IDA是静态分析软件，再打开OD载入，先直接找相应地址发现找不到，明白一个道理，IDA中的地址和OD中的不一定是对应的，然后就是通过寻找关键命令的方式进行查找，最后在OD中找到相应位置，顺藤摸瓜找到跳转修改即可。<br>总结：三种方法中，第一种就是常规方法没什么说的。第三种的话是在破解cracme第四题经验上做的，其实也不算经验，就是一般在IDA中会有一些关键提示，通过这些提示就能摸索出关键的跳转或者其他的命令，这是最蠢的方法，还不定能找出来，所以不建议轻易使用。而第二种方法也算是很小白的方法吧，属于凑巧，但也不失为一种便捷的方法</p>
 
-  </section>
-</article>
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#破解程序-160个crackme第二个Afkayas"><span class="toc-text">破解程序:160个crackme第二个Afkayas</span></a></li></ol>
+  </div>
+</div>
 
-  <div class="sharing grid">
-  <section class="profile grid-item grid">
-    <img class="avatar" src="http://7xrcp8.com1.z0.glb.clouddn.com/avatar.png" alt="avatar" />
-    <div class="grid-item">
-      <p class="title"> 追客 </p>
-      <p class="subtitle"> You are the JavaScript in my HTML </p>
-    <div>
-  </section>
+  
+<nav id="pagination">
+  
 
-  <section class="share-btns">
-    <!-- <p> share it if you like it~ </p> -->
-    <a
-  class="twitter-share-button"
-  data-size="large"
-  data-via="DrakeLeung"
-  href="https://twitter.com/intent/tweet?text= id="破解程序-160个crackm"
->
-  Tweet
-</a>
+  
 
-<script>
-  window.twttr = (function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0],
-    t = window.twttr || {};
-  if (d.getElementById(id)) return t;
-  js = d.createElement(s);
-  js.id = id;
-  js.src = "https://platform.twitter.com/widgets.js";
-  js.async = true;
-  fjs.parentNode.insertBefore(js, fjs);
+  
+    <a href="/2016/09/04/hello-world/" class="next">下一篇 Hello World &rarr;</a>
+  
+</nav>
 
-  t._e = [];
-  t.ready = function(f) {
-    t._e.push(f);
-  };
+  <!-- JiaThis Button BEGIN -->
 
-  return t;
-}(document, "script", "twitter-wjs"));
-</script>
+<!-- JiaThis Button END -->
 
-  </section>
+
+      
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by HEADS43 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
 </div>
 
 
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">One To One,then many a you !</p>
+    <ul class="social-icon">
   
-    
-<section class="article-comment">
-  <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  
+    <li>
+      <a href="https://github.com/stiekel/hexo-theme-random">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe609;</i>
+        
+      </a>
+    </li>
+  
+</ul>
   </div>
-</section>
+</div>
+
+
+<div id="btn-view">Hide</div>
 
 <script>
-  var disqus_shortname = 'drakeleung';
-  
-  var disqus_url = 'http://lc.dropsec.xyz/2016/09/04/crackme第二个Afkayas/';
-  
-  (function(){
-    var dsq = document.createElement('script');
-    dsq.type = 'text/javascript';
-    dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-  })();
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
 </script>
 
 
-  
-</main>
 
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "D7CCC8";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
 </body>
 </html>
+
