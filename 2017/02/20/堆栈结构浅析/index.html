@@ -45,15 +45,6 @@
 <div class="side-navigate hide-area">
   
   
-    <div class="item next">
-      <a href="/2017/02/20/13134/">
-        <div class="item-icon"></div>
-      </a>
-      <div class="item-title">
-        13134
-      </div>
-    </div>
-  
 </div>
 <div id="outer-container" class="hide-area">
 <div id="container">
@@ -162,41 +153,23 @@
 <p>　　代码如下：</p>
 <pre>
     int vulnerable_func(char * input)
-
     {
-
       int isSafe = 0;
-
       char vulnerable_var[16];
-
       strcpy(vulnerable_var,input);
-
       if(isSafe == 0)
-
       {
-
         printf("Check error!\n");
-
         return 1;
-
       }
-
       printf("Check Pass!\n");
-
         return 0;
-
     }
-
     int main(int argc,char* argv[])
-
     {
-
       vulnerable_func("Hello World!\n");
-
       vulnerable_func("Hello World!AAAAAAAAAAAAAAA");
-
       return 0;
-
     }
 </pre>
 
@@ -225,8 +198,6 @@
 
   
 
-  
-    <a href="/2017/02/20/13134/" class="next">下一篇 13134 &rarr;</a>
   
 </nav>
 
