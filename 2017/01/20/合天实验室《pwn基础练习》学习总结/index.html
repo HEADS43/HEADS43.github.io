@@ -1,0 +1,442 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="HEADS43">
+  
+  
+  
+  
+    <meta name="description" content="合天实验室《pwn基础练习》学习总结0x00  pwn基础练习
+　　这个算是比较基础的教程，因为学起来不会感觉到吃力，只要懂一些基本的知识就行了。这是一个实验课程，因此里面有好多实践的东西，感觉这样更能深刻理解其中的原理。还有就是感觉这个课程里针对缓冲区溢出攻击的几个方面分的也比较清晰。
+0x01  缓冲区溢出攻击的基本操作
+　　这个部分主要就是就是一些基础中的基础，比如说是汇编的基础和py...">
+  
+  <title>合天实验室《pwn基础练习》学习总结 [ HEADS43 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="HEADS43">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+  
+    <div class="item next">
+      <a href="/2016/12/20/堆栈结构浅析/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        堆栈结构浅析
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="/css/avatar.jpg"/>
+          <div id="homelink">HEADS43</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">Home</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">Archives</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">Tags</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">Categories</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">About</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="https://github.com/stiekel/hexo-theme-random">Github</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>合天实验室《pwn基础练习》学习总结</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2017-01-20</span>
+      
+        <span id = "post-title-updated">修改于 2017-02-20</span>
+      
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/pwn基础/">pwn基础</a>
+      
+      </span>
+      
+    </p>
+    
+    <h1 id="合天实验室《pwn基础练习》学习总结"><a href="#合天实验室《pwn基础练习》学习总结" class="headerlink" title="合天实验室《pwn基础练习》学习总结"></a>合天实验室《pwn基础练习》学习总结</h1><p><strong>0x00  pwn基础练习</strong></p>
+<p>　　这个算是比较基础的教程，因为学起来不会感觉到吃力，只要懂一些基本的知识就行了。这是一个实验课程，因此里面有好多实践的东西，感觉这样更能深刻理解其中的原理。还有就是感觉这个课程里针对缓冲区溢出攻击的几个方面分的也比较清晰。</p>
+<p><strong>0x01  缓冲区溢出攻击的基本操作</strong></p>
+<p>　　这个部分主要就是就是一些基础中的基础，比如说是汇编的基础和python的基础了解，然后就是对于gdb这个工具的使用吧。</p>
+<p>　　下面就来看看具体的分析流程：</p>
+<p>　　首先是cat到源码进行分析（源码如下），可以看到gets()函数有可能会引发缓冲区溢出，因为gets()函数读取数据时不会对内容缓冲区的长度进行检查，而如果输入超出缓冲区长度就会发生溢出。</p>
+<p>　　源码如下：</p>
+<pre>
+
+#include <stdio.h>
+int main(int argc, char** argv)
+{
+    int modified;
+    char buffer[64];
+    modified = 0;
+    gets(buffer);        // 引发缓冲区溢出
+    if (modified != 0)
+    {
+        printf("Congratulations, you pwned it.\n");
+    }
+    else
+    {
+        printf("Please try again.\n");
+    }
+    return 0;
+}
+
+</stdio.h></pre>
+
+<p>　　然后是用gdb反汇编得到汇编代码进行分析，下面是对main函数中的汇编代码的解释：</p>
+<pre>
+0x080482a0 <+0>:   push   %ebp
+0x080482a1 <+1>:   mov    %esp,%ebp
+0x080482a3 <+3>:   and    $0xfffffff0,%esp
+ esp = esp - 0x60，即在栈上分配0x60）字节的空间
+0x080482a6 <+6>:   sub    $0x60,%esp
+ modified变量位于esp + 0x5C处，将其初始化为0
+0x080482a9 <+9>:   movl   $0x0,0x5c(%esp)
+ buffer位于esp + 0x1C处
+0x080482b1 <+17>:  lea    0x1c(%esp),%eax
+0x080482b5 <+21>:  mov    %eax,(%esp)
+ 调用gets(buffer)读取输入数据
+0x080482b8 <+24>:  call   0x8049360 <gets>
+ 判断modified变量的值是否是0
+0x080482bd <+29>:  cmpl   $0x0,0x5c(%esp)
+ 如果modified的值等于0，就跳转到 0x080482d2
+0x080482c2 <+34>:  je     0x80482d2 <main+50>
+ modified不为0，打印成功提示
+0x080482c4 <+36>:  movl   $0x80b3eec,(%esp)
+0x080482cb <+43>:  call   0x8049500 <puts>
+0x080482d0 <+48>:  jmp    0x80482de <main+62>
+ modified为0，打印失败提示
+0x080482d2 <+50>:  movl   $0x80b3f0b,(%esp)
+0x080482d9 <+57>:  call   0x8049500 <puts>
+0x080482de <+62>:  mov    $0x0,%eax
+0x080482e3 <+67>:  leave
+0x080482e4 <+68>:  ret
+
+
+</+68></+67></+62></puts></+57></+50></main+62></+48></puts></+43></+36></main+50></+34></+29></gets></+24></+21></+17></+9></+6></+3></+1></+0></pre>
+
+<p>　　看到上面的源码和汇编代码，程序的大概流程应该就清楚了，从中我们得知buffer在esp+0x1C处，而modified在esp+0x5C处，这两个地址之间隔着刚好六十四，也就是buffer数组的大小。因此，modified也就是从第六十五位输入的的数据开始，而在这个程序中只要是使得modified的值不为0就行，那也就是说只要第六十五个输入的对应ASCII值不为零就好了，事实也就是这样的。我们还可以直接使用python命令pwn掉程序：python -c “print ‘A’*64+’B’” | ./pwn1，这样更能体验到pwn的乐趣，但这也是前面大量工作的铺垫。</p>
+<p>　　最后挖一个坑，实验里面的成功提示信息的地址是从何得来的，有时间再仔细的过一遍吧。</p>
+<p><strong>0x02  精确覆盖变量数据</strong></p>
+<p>　　这个感觉跟第一课时的差别不是很大，这个课时的示例程序是一个带有两个参数的main函数，两个参数方分别是参数的个数argc另一个argv则是指向一个具体存储参数内容的字符串数组。感觉这个程序和上一个的区别在于，上一个是一个，随便溢出都行，这个则是需要计算出需要溢出的长度和内容。而这里呢就涉及到一个大端小段存储的知识点，这是两种不同的存储方式，我们只需记得小端存储就是高位数据存在高地址，低位数据存在低地址。</p>
+<p>　　经过和第一课时相同的分析过程，得出这个程序正常运行是不会跳转到成功信息的，需要的是对溢出的信息控制为0x61626364。也和上一课时一样，buffer位于esp+0x1C处，而modified位于esp+0x5C处，他们相差64，所以得溢出四位数据来，先用1234来测试发现其是使用的小端存储，于是控制溢出信息为\x64\x63\x62\x61，这样的话使用python就能一步解决了：python -c “print ‘A’*64+’dcba’” | xargs ./pwn2（xargs是Linux中的一个命令，它可以将输入数据当做命令行参数传给指定的程序）</p>
+<p><strong>0x03  环境变量继承</strong></p>
+<p>　　第三课时的环境变量的继承就有点难度了，虽说跟前面的差不多的分析过程但是首先得懂得环境变量继承的原理。</p>
+<p>　　所谓程序运行的环境也就是一个外部条件，或者说他运行时的外部的样子，同时，跟子承父业一样当一个父进程启动一个子进程时，这个子进程会继承父进程的环境变量。在上一课时的main函数里还可以有个参数，它是指向另一个数组的，这个数组存储的是具体的环境变量参数，而在这个示例程序中是使用了buffer通过strcpy()函数模拟子进程继承父进程的环境变量值variable，而modified则是需要控制的溢出值，同上的分析过程，结果也同上，需要控制的溢出内容是添加一个六十八位的数据（后四位按要求来）来作为新的环境变量。</p>
+<p>　　而这个步骤却可以有两种不同的方式来解决，一种是按部就班的使用Linux语句命令来进行运行。另一种则是使用python脚本来实现，也就是事先编辑好了一串命令，来运行直接达到你的目的。具体的脚本参见附件。</p>
+<p><strong>0x04  函数指针改写</strong></p>
+<p>　　这个函数指针的改写，我觉得跟前面的一样，就是改变了一下形式，这里是要溢出覆盖的是一串地址，也就是相当于是修改一个函数的入口地址，是这个程序按照你的意思来运行，借以达到目的。</p>
+<p> 　　这里面涉及到了objdump这个工具的使用，之前也稍微接触过，如果说gdb是Linux的OD，那它就是Linux的ida（差不多，但感觉不如ida强大），也就是倚天屠龙的关系。这个工具可以静态调试程序，查看每个功能函数的汇编。</p>
+<p>　　这个示例程序是先设一个函数指针，然后使用gets()函数来获取他，这样只用上面的分析然后进行溢出控制，是的函数指针的值变为win()函数的入口地址就好了，而函数的入口地址使用objdump查看就好了。这样也是很容易就pwn掉了它。</p>
+<p><strong>0x05  溢出攻击的总结</strong></p>
+<p>　　通过这几个课时的学习，也差不多了解了其中的原理。首先我们得找出溢出点，还得知道溢出长度，这样才能去编写shellcode来攻击它，得到我们想要的结果。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#合天实验室《pwn基础练习》学习总结"><span class="toc-text">合天实验室《pwn基础练习》学习总结</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+
+  
+
+  
+    <a href="/2016/12/20/堆栈结构浅析/" class="next">下一篇 堆栈结构浅析 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div class="ds-thread" data-thread-key="2017/01/20/合天实验室《pwn基础练习》学习总结/" data-title="合天实验室《pwn基础练习》学习总结" data-url="http://lc.dropsec.xyz/2017/01/20/合天实验室《pwn基础练习》学习总结/"></div>
+      
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by HEADS43 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  <script type="text/javascript">
+var duoshuoQuery = {short_name:"rlovep"};
+(function() {
+  var ds = document.createElement('script');
+  ds.type = 'text/javascript';ds.async = true;
+  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  ds.charset = 'UTF-8';
+  (document.getElementsByTagName('head')[0] 
+   || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/css/avatar.jpg">
+    <p id="description">One To One,then many a you !</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/HEADS43/HEADS43.github.io.git">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/5786955497/home?wvr=5">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://www.douban.com/people/151934023/">
+        
+          <i class="icon iconfont douban">&#xe609;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "D7CCC8";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+
