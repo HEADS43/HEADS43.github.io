@@ -23,7 +23,7 @@
    　　一般的，系统会划分出两种不同的内存空间，也就是堆和栈。
    　　在这其中，栈是有结构的，每个区块按照一定的次序存放，可以明确知道每个区块的大小和地址。而堆则不是这样的，它...">
   
-  <title>13134 [ HEADS43 ]</title>
+  <title>堆栈结构浅析 [ HEADS43 ]</title>
   
     <link rel="alternate" href="/atom.xml" title="HEADS43">
   
@@ -44,22 +44,13 @@
 <body>
 <div class="side-navigate hide-area">
   
-    <div class="item prev">
-      <a href="/2017/02/20/堆栈结构浅析/">
-        <div class="item-icon"></div>
-      </a>
-      <div class="item-title">
-        堆栈结构浅析
-      </div>
-    </div>
-  
   
     <div class="item next">
-      <a href="/2017/02/12/456789/">
+      <a href="/2017/02/20/13134/">
         <div class="item-icon"></div>
       </a>
       <div class="item-title">
-        456789
+        13134
       </div>
     </div>
   
@@ -134,13 +125,23 @@
       
       
   <article id="post">
-    <h1>13134</h1>
+    <h1>堆栈结构浅析</h1>
     <p class="page-title-sub">
       <span id = "post-title-date">撰写于 2017-02-20</span>
       
         <span id = "post-title-updated">修改于 2017-02-20</span>
       
       
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/堆栈结构/">堆栈结构</a>
+      
+      </span>
       
     </p>
     
@@ -159,27 +160,47 @@
 <p><strong>0x03 栈溢出攻击</strong></p>
 <p>　　一般攻击是在远程通过网络实施栈溢出攻击，攻击报文通过网络找到特定的服务器主机，并且在服务器主机进行函数调用时进行恶意破坏行为。典型的为以下的三种：修改相邻数据，修改函数的返回值和修改SEH。</p>
 <p>　　代码如下：</p>
-<pre><code>int vulnerable_func(char * input)
-{
-  int isSafe = 0;
-  char vulnerable_var[16];
-  strcpy(vulnerable_var,input);
-  if(isSafe == 0)
-  {
-    printf(&quot;Check error!\n&quot;);
-    return 1;
-  }
-  printf(&quot;Check Pass!\n&quot;);
-    return 0;
-}
+<pre>
+    int vulnerable_func(char * input)
 
-int main(int argc,char* argv[])
-{
-  vulnerable_func(&quot;Hello World!\n&quot;);
-  vulnerable_func(&quot;Hello World!AAAAAAAAAAAAAAA&quot;);
-  return 0;
-}
-</code></pre><p> （1）修改相邻数据</p>
+    {
+
+      int isSafe = 0;
+
+      char vulnerable_var[16];
+
+      strcpy(vulnerable_var,input);
+
+      if(isSafe == 0)
+
+      {
+
+        printf("Check error!\n");
+
+        return 1;
+
+      }
+
+      printf("Check Pass!\n");
+
+        return 0;
+
+    }
+
+    int main(int argc,char* argv[])
+
+    {
+
+      vulnerable_func("Hello World!\n");
+
+      vulnerable_func("Hello World!AAAAAAAAAAAAAAA");
+
+      return 0;
+
+    }
+</pre>
+
+<p> （1）修改相邻数据</p>
 <p>  　　 若以上代码是服务器的安全模块的一部分，输入的是用户信息，isSafe是服务器中存放的判断用户的关键数据，就可以利用栈溢出来修改isSafe变量，从而造成一次非法用户绕过安全检查的成功入侵，但这种情况很少出现。</p>
 <p> （2）修改函数返回值</p>
 <p>   　　相较于前一种方式，这是一种更常见的攻击。若当输入的数据够大，就足以覆盖函数的返回地址，再者的话如果输入精心构造的shellcode，就能够精确地修改函数返回地址，使得程序直接就跳到shellcode中去执行其中的函数，这样也就是可以获得进程对应的权限进行远程植入自己想要执行的函数，达到破坏或者利用目的。</p>
@@ -201,13 +222,11 @@ int main(int argc,char* argv[])
   
 <nav id="pagination">
   
-    <a href="/2017/02/20/堆栈结构浅析/" class="prev">&larr; 上一篇 堆栈结构浅析</a>
-  
 
   
 
   
-    <a href="/2017/02/12/456789/" class="next">下一篇 456789 &rarr;</a>
+    <a href="/2017/02/20/13134/" class="next">下一篇 13134 &rarr;</a>
   
 </nav>
 
@@ -217,7 +236,7 @@ int main(int argc,char* argv[])
 
 
       
-      <div class="ds-thread" data-thread-key="2017/02/20/13134/" data-title="13134" data-url="http://lc.dropsec.xyz/2017/02/20/13134/"></div>
+      <div class="ds-thread" data-thread-key="2017/02/20/堆栈结构浅析/" data-title="堆栈结构浅析" data-url="http://lc.dropsec.xyz/2017/02/20/堆栈结构浅析/"></div>
       
       
       
