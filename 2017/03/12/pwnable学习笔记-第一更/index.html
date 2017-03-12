@@ -1,8 +1,6 @@
 
 
 
-  
-
 
 
 
@@ -18,9 +16,11 @@
   
   
   
-    <meta name="description" content="One To One,then many a you !">
+    <meta name="description" content="pwnable学习笔记 第一更　　这个学习pwn基础的练习网站是在我组长分享给我们的，感觉开始应该还是比较简单的，因此想写点自己学习过程中的一些经验和问题，以供以后回顾，深入学习
+0x00  fd（Linux文件标识符）
+　　个人感觉第一题还是比较简单的，主要考察的就是fd这个Linux文件标识符以及read()和atoi()这两个函数。fd是Linux的文件标识符，fd=0是为标准输入，f...">
   
-  <title>标签: pwn基础 [ HEADS43 ]</title>
+  <title>pwnable学习笔记 第一更 [ HEADS43 ]</title>
   
     <link rel="alternate" href="/atom.xml" title="HEADS43">
   
@@ -41,6 +41,15 @@
 <body>
 <div class="side-navigate hide-area">
   
+  
+    <div class="item next">
+      <a href="/2017/01/20/合天实验室《pwn基础练习》学习总结/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        合天实验室《pwn基础练习》学习总结
+      </div>
+    </div>
   
 </div>
 <div id="outer-container" class="hide-area">
@@ -73,7 +82,7 @@
           </li>
         
           
-            <li class="active">
+            <li>
           
             <a href="/tags">标签</a>
             
@@ -105,63 +114,140 @@
     <div id="content-inner">
       
       
-  <div id="tag">
-    <h1>pwn基础</h1>
-    
+  <article id="post">
+    <h1>pwnable学习笔记 第一更</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2017-03-12</span>
+      
+        <span id = "post-title-updated">修改于 2017-03-12</span>
+      
+      
+      
+      <span id = "post-title-tags">
+      标签
       
       
         
-      
-      
-    
-      
-      
         
-          
-        
+        <a href="/tags/pwnable/">pwnable</a>
       
+      </span>
       
-      <div class="post-title-item">
-  
-  <a href="/2017/01/20/合天实验室《pwn基础练习》学习总结/">
-  
-    合天实验室《pwn基础练习》学习总结
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">1-20</span>
+    </p>
     
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/pwn基础/">pwn基础</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
-      
-      
-        
-      
-      
-    
+    <h1 id="pwnable学习笔记-第一更"><a href="#pwnable学习笔记-第一更" class="headerlink" title="pwnable学习笔记 第一更"></a>pwnable学习笔记 第一更</h1><p>　　这个学习pwn基础的练习网站是在我组长分享给我们的，感觉开始应该还是比较简单的，因此想写点自己学习过程中的一些经验和问题，以供以后回顾，深入学习</p>
+<p><strong>0x00  fd（Linux文件标识符）</strong></p>
+<p>　　个人感觉第一题还是比较简单的，主要考察的就是fd这个Linux文件标识符以及read()和atoi()这两个函数。fd是Linux的文件标识符，fd=0是为标准输入，fd=1时为标准输出，fd=2时标准输出错误；read()函数就是简单的赋值传送函数，将第一个参数fd所指的文件传送nbyte到buf指针所指的内存中（该函数的一般形态是：read(fd,buf,n)）；atoi (表示 alphanumeric to integer)是把字符串转换成整型数的一个函数。</p>
+<p>下面就是实际的操作：</p>
+<p>　先是ls出所有文件，在cat出fd.c中如下的源码：</p>
+<pre>
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+char buf[32];
+int main(int argc, char* argv[], char* envp[])
+{
+
+    if(argc&lt2){
+
+        printf("pass argv[1] a number\n");
+
+        return 0;
+
+    }
+
+    int fd = atoi( argv[1] ) - 0x1234;
+
+    int len = 0;
+
+    len = read(fd, buf, 32);
+
+    if(!strcmp("LETMEWIN\n", buf)){
+
+        printf("good job :)\n");
+
+        system("/bin/cat flag");
+
+        exit(0);
+    }
+    printf("learn about Linux file IO\n");
+
+    return 0;
+
+}
+
+</pre>
+
+<p>　　经过一番分析，也就是将数组argv的数减去0x1234剩下的与原有的字符串对比，相同则获得bin权限，否则不能获得权限，那就先加上0x1234对应的十进制的4660，然后在输入相应的字符串即可，操作如下即可。<br><img src="http://omkxe7cq3.bkt.clouddn.com/fd%E6%93%8D%E4%BD%9C.png" alt=""></p>
+<p><strong>0x01  collision（碰撞）</strong></p>
+<p>　　第二题其实跟第一题差不多的感觉。从题目的如下代码可见，需要输入20个字符，被分为五段，每段当成int型处理，对其进行相加与0x21DD09EC对比，相同则获得bin权限，否则失败。</p>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+unsigned long hashcode = 0x21DD09EC;
+unsigned long check_password(const char* p){
+    int* ip = (int*)p;
+    int i;
+    int res=0;
+    for(i=0; i&lt;5; i++){
+        res += ip[i];
+    }
+    return res;
+}
+
+int main(int argc, char* argv[]){
+    if(argc&lt;2){
+        printf("usage : %s [passcode]\n", argv[0]);
+        return 0;
+    }
+    if(strlen(argv[1]) != 20){
+        printf("passcode length should be 20 bytes\n");
+        return 0;
+    }
+
+    if(hashcode == check_password( argv[1] )){
+        system("/bin/cat flag");
+        return 0;
+    }
+    else
+        printf("wrong passcode.\n");
+    return 0;
+}
+
+</pre>
+
+<p>那么我们就可使用python脚本对其操作，具体的操作如下：</p>
+<p><img src="http://omkxe7cq3.bkt.clouddn.com/col%E6%93%8D%E4%BD%9C.png" alt=""></p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#pwnable学习笔记-第一更"><span class="toc-text">pwnable学习笔记 第一更</span></a></li></ol>
   </div>
+</div>
+
+  
+<nav id="pagination">
+  
 
   
 
+  
+    <a href="/2017/01/20/合天实验室《pwn基础练习》学习总结/" class="next">下一篇 合天实验室《pwn基础练习》学习总结 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div class="ds-thread" data-thread-key="2017/03/12/pwnable学习笔记-第一更/" data-title="pwnable学习笔记 第一更" data-url="http://lc.dropsec.xyz/2017/03/12/pwnable学习笔记-第一更/"></div>
       
       
       
@@ -179,6 +265,18 @@
 </div>
 
 </div>
+
+  <script type="text/javascript">
+var duoshuoQuery = {short_name:"rlovep"};
+(function() {
+  var ds = document.createElement('script');
+  ds.type = 'text/javascript';ds.async = true;
+  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  ds.charset = 'UTF-8';
+  (document.getElementsByTagName('head')[0] 
+   || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
 
 
 
@@ -296,6 +394,8 @@ var unsplashConfig = {"gravity":"north"};
 var turnoffBackgroundImage = false;
 
 
+
+  turnoffBackgroundImage = true;
 
 
 var backgroundColor = "D7CCC8";
