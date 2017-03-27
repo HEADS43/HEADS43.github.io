@@ -16,11 +16,13 @@
   
   
   
-    <meta name="description" content="pwnable学习笔记 第一更　　这个学习pwn基础的练习网站是在我组长分享给我们的，感觉开始应该还是比较简单的，因此想写点自己学习过程中的一些经验和问题，以供以后回顾，深入学习
-0x00  fd（Linux文件标识符）
-　　个人感觉第一题还是比较简单的，主要考察的就是fd这个Linux文件标识符以及read()和atoi()这两个函数。fd是Linux的文件标识符，fd=0是为标准输入，f...">
+    <meta name="description" content="0x00  花指令(Junk code)的介绍
+　　所谓花指令，人如其名，它就是一些混淆人们视线的指令，一般就是混在正常指令，正常运行时是永远不会运行到的代码块，但是当你去反汇编它是，因为反编译器不会是判断，会导致反编译出来的代码永远不正确，进而使得反汇编过程不能够如期进行。例如如下的程序中：
+
+#include &lt;iostream.h&gt;
+#include &lt;windows...">
   
-  <title>pwnable学习笔记 第一更 [ HEADS43 ]</title>
+  <title>Reserve系列题目浅析（一） [ HEADS43 ]</title>
   
     <link rel="alternate" href="/atom.xml" title="HEADS43">
   
@@ -41,13 +43,22 @@
 <body>
 <div class="side-navigate hide-area">
   
-  
-    <div class="item next">
-      <a href="/2017/02/04/Reserve系列题目浅析（一）/">
+    <div class="item prev">
+      <a href="/2017/03/12/pwnable学习笔记-第一更/">
         <div class="item-icon"></div>
       </a>
       <div class="item-title">
-        Reserve系列题目浅析（一）
+        pwnable学习笔记 第一更
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2017/01/20/合天实验室《pwn基础练习》学习总结/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        合天实验室《pwn基础练习》学习总结
       </div>
     </div>
   
@@ -115,11 +126,11 @@
       
       
   <article id="post">
-    <h1>pwnable学习笔记 第一更</h1>
+    <h1>Reserve系列题目浅析（一）</h1>
     <p class="page-title-sub">
-      <span id = "post-title-date">撰写于 2017-03-12</span>
+      <span id = "post-title-date">撰写于 2017-02-04</span>
       
-        <span id = "post-title-updated">修改于 2017-03-20</span>
+        <span id = "post-title-updated">修改于 2017-03-27</span>
       
       
       
@@ -129,133 +140,52 @@
       
         
         
-        <a href="/tags/pwnable/">pwnable</a>
+        <a href="/tags/Reaserve/">Reaserve</a>
       
       </span>
       
     </p>
     
-    <h1 id="pwnable学习笔记-第一更"><a href="#pwnable学习笔记-第一更" class="headerlink" title="pwnable学习笔记 第一更"></a>pwnable学习笔记 第一更</h1><p>　　这个学习pwn基础的练习网站是在我组长分享给我们的，感觉开始应该还是比较简单的，因此想写点自己学习过程中的一些经验和问题，以供以后回顾，深入学习</p>
-<p><strong>0x00  fd（Linux文件标识符）</strong></p>
-<p>　　个人感觉第一题还是比较简单的，主要考察的就是fd这个Linux文件标识符以及read()和atoi()这两个函数。fd是Linux的文件标识符，fd=0是为标准输入，fd=1时为标准输出，fd=2时标准输出错误；read()函数就是简单的赋值传送函数，将第一个参数fd所指的文件传送nbyte到buf指针所指的内存中（该函数的一般形态是：read(fd,buf,n)）；atoi (表示 alphanumeric to integer)是把字符串转换成整型数的一个函数。</p>
-<p>下面就是实际的操作：</p>
-<p>　先是ls出所有文件，在cat出fd.c中如下的源码：</p>
+    <p><strong>0x00  花指令(Junk code)的介绍</strong></p>
+<p>　　所谓花指令，人如其名，它就是一些混淆人们视线的指令，一般就是混在正常指令，正常运行时是永远不会运行到的代码块，但是当你去反汇编它是，因为反编译器不会是判断，会导致反编译出来的代码永远不正确，进而使得反汇编过程不能够如期进行。<br>例如如下的程序中：</p>
 <pre>
-
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;string.h&gt;
-char buf[32];
-int main(int argc, char* argv[], char* envp[])
+#include &lt;iostream.h&gt;
+#include &lt;windows.h&gt;
+void main()
 {
-
-    if(argc&lt2)
-          {
-
-        printf("pass argv[1] a number\n");
-
-        return 0;
-
-       }
-
-    int fd = atoi( argv[1] ) - 0x1234;
-
-    int len = 0;
-
-    len = read(fd, buf, 32);
-
-    if(!strcmp("LETMEWIN\n", buf))
-            {
-
-        printf("good job :)\n");
-
-        system("/bin/cat flag");
-
-        exit(0);
-         }
-    printf("learn about Linux file IO\n");
-
-    return 0;
-
+    _asm
+    {
+            jmp l2
+        _EMIT 0x1//这里就是花指令
+        _EMIT 0x2//这里就是花指令
+        _EMIT 0x3//这里就是花指令
+        _EMIT 0x4//这里就是花指令
+l2:
+        mov eax,0x11111111
+    }
 }
+
 
 </pre>
 
-<p>　　经过一番分析，也就是将数组argv的数减去0x1234剩下的与原有的字符串对比，相同则获得bin权限，否则不能获得权限，那就先加上0x1234对应的十进制的4660，然后在输入相应的字符串即可，操作如下即可。<br><img src="http://omkxe7cq3.bkt.clouddn.com/fd%E6%93%8D%E4%BD%9C.png" alt=""></p>
-<p><strong>0x01  collision（碰撞）</strong></p>
-<p>　　第二题其实跟第一题差不多的感觉。从题目的如下代码可见，需要输入20个字符，被分为五段，每段当成int型处理，对其进行相加与0x21DD09EC对比，相同则获得bin权限，否则失败。</p>
-<pre>
-#include &lt;stdio.h&gt;
-#include &lt;string.h&gt;
-unsigned long hashcode = 0x21DD09EC;
-unsigned long check_password(const char* p)
-{
-    int* ip = (int*)p;
-    int i;
-    int res=0;
-    for(i=0; i&lt;5; i++)
-            {
-        res += ip[i];
-         }
-    return res;
-}
-
-int main(int argc, char* argv[]){
-    if(argc&lt;2)
-            {
-        printf("usage : %s [passcode]\n", argv[0]);
-        return 0;
-         }
-    if(strlen(argv[1]) != 20)
-             {
-        printf("passcode length should be 20 bytes\n");
-        return 0;
-          }
-
-    if(hashcode == check_password( argv[1] ))
-              {
-        system("/bin/cat flag");
-        return 0;
-           }
-    else
-        printf("wrong passcode.\n");
-    return 0;
-}
-
-</pre>
-
-<p>那么我们就可使用python脚本对其操作，具体的操作如下：</p>
-<p><img src="http://omkxe7cq3.bkt.clouddn.com/col%E6%93%8D%E4%BD%9C.png" alt=""></p>
-<p><strong>0x02  bof</strong></p>
-<p>　　这是第三题，终于感觉跟之前学的那些缓冲区溢出还有米神的一步一步学rop有点瓜葛了。这里给出了程序及其源码，分析源码可以知道是gets()函数出了问题，可以进行利用其进行溢出修改key来拿到bin权限；</p>
-<p>  　　具体的分析就是这个函数中先是调用一个gets()函数，然后是再验证key的值是否是0xcafebabe来判断是否能让我们获取其中的的bin权限，但是下面的main函数已经定义了可以是0xdeadbeef，因此我们就需要溢出 overflowme这个数组来修改可以的值借以达到通过验证获取bin权限的目的，这样的话，获取数组和key在内存中所占空间大小就成了关键之处，而数组则是通过gets()函数来进入程序的，而且这里只有gets()函数和printf()函数可以缓冲区溢出，printf不可能，剩下的之有它了，这里我们可以使用ida帮助我们分析；</p>
-<pre>
-#include &lt;stdio.h&gt;
-#include &lt;string.h&gt;
-#include &lt;stdlib.h&gt;
-void func(int key)
-{
-    char overflowme[32];
-    printf("overflow me : ");
-    gets(overflowme);    // smash me!
-    if(key == 0xcafebabe)
-      {
-        system("/bin/sh");
-      }
-    else
-      {
-        printf("Nah..\n");
-      }
-}
-int main(int argc, char* argv[])
-{
-    func(0xdeadbeef);
-    return 0;
-}
-</pre>
-
-<p>　　先使用ida查看一下，发现main函数有可疑之处；<br><img src="http://omkxe7cq3.bkt.clouddn.com/func%E5%87%BD%E6%95%B0.png" alt=""></p>
-<p>　　进去一瞅，发现gets()函数的参数s也就是数组的起始地址之ebp-2ch，而a1也就是key是ebp+8h，这样一算，需要输入0x2c+0x8=52个字符才能造成溢出，修改key值，进而获得bin权限；<br><img src="http://omkxe7cq3.bkt.clouddn.com/%E4%B8%BB%E5%87%BD%E6%95%B0.png" alt=""><br>再进行python脚本的构造就行了（很尴尬，脚本是抄的但是我也去查了其中一些命令的含义），构造出的python命令是： (python -c ‘print(“a”*52+ chr(0xbe) + chr(0xba) + chr(0xfe) +chr(0xca))’; cat) | nc pwnable.kr 9000 其中几个chr()的内容可以使用”/xbe/xba/xfe/xca”表示，nc是链接远端的命令，这里需要注意的是使用的cat的目的是显示出flag，缺少是不行的；<br><img src="http://omkxe7cq3.bkt.clouddn.com/bof%E8%B0%83%E8%AF%95.png" alt=""></p>
+<p>　　反编译器在反编译的时候不会像我们人一样去理解jmp和l2之间的指令是永远不会执行到的，所以在反编译的时候就把这段乱七八糟的代码作为正常的指令了，而这样的反编译会影响mov eax,0x11111111这个指令的正确识别，所以导致在OD中以上代码不会正确显示。</p>
+<p><strong>0x01  花指令的设置</strong></p>
+<p>　　设置花指令有两种方式，一是使用jmp指令，另外一个就是使用call指令配合ret指令。</p>
+<p>　　使用jmp指令的方法不用多说了，上面的示例程序就是能很好地说明了，这里就着重介绍一下第二种方法。因为call指令相当于是两个指令，先将自身所在位置的下一条指令的地址压入栈中，然后再跳转到call函数执行的地方，而ret则是跳转到已经压入堆栈的地址，使之往下运行。这样的话就能使用这两条指令组合来完成jmp指令的目的。</p>
+<p>　　下面介绍一下具体的加花指令的流程：</p>
+<p>　　（1）    先是call一个地址，然后在里面写一些无用的垃圾汇编代码，但是要记得所写的代码的字节数；</p>
+<p>　　（2）    再者就是在call里面的一些设置，先是pop出压入的地址，把这个地址减去刚刚代码字节数再push进堆栈里然后就是ret就好了<br>还有推荐一篇尝试自己手动加花指令的文章，可以去看看，链接如下：<br>　　　　　　<a href="http://www.pediy.com/kssd/pediy09/pediy09-324.htm" title="http://www.pediy.com/kssd/pediy09/pediy09-324.htm" target="_blank" rel="external">http://www.pediy.com/kssd/pediy09/pediy09-324.htm
+</a></p>
+<p><strong>0x02   如何去除花指令</strong></p>
+<p>　　既然都知道花指令的原理了，那当然需要知道如何才能去除他咯，毕竟我们要不仅要能够运行一个程序，还要去reserve它。</p>
+<p> 　　去除花指令也有两种方式，一种是手动的去除，另一种是使用工具。手动肯定是费时费力的活，但是感觉还是有必要去学习的，毕竟不是什么地方都有工具来供我们使用的。而手动去除花指令的方法也是多种多样，这里就分享一个别人的小技巧：当发现jmp或者call的地址在OD中没显示的话，就把jmp或者call指令的下一个指令nop掉吧，肯定是花指令，如果还没有显示的话就继续nop下一条，直到显示的指令和执行的指令一致。然后使用工具的话，就是对应的一些插件，使用就不多说了。</p>
+<p><strong>0x03   实力搞一波事情（其实是看了别人的writeup）</strong></p>
+<p>　　下面就来用事实说话。<br>首先是测试程序，然后侦壳，使用peid和die都没发现，但是却在使用OD调试时发现还是有壳的，看人家的writeup上用的一个ExeinfoPe的软件能查出壳，但是也看不出是什么壳。既然知道有壳，就脱吧，这并不是什么难的壳，简单的单步跟踪或者堆栈平衡都行，找到OEP使用OllyDump脱了就好。</p>
+<p>　　下面就是花指令的事了，使用ODA查看了发现有好多处，如下：</p>
+<p><img src="http://omkxe7cq3.bkt.clouddn.com/reserve%EF%BC%88%E4%B8%80%EF%BC%8901.png" alt=""></p>
+<p>　　然后先定位到判断函数然后对相关函数去花，先是在MessageBoxW处下断，但是并没有在这里断下。再是就是CreatThread，下断，输入伪码回车，断在这了。在0x4044FF下断跟进线程函数sub_4044FF，发现只是call了一个函数，地址是0x403894，跟进发现花指令，这里的大概分为两种：</p>
+<p>　　（1）这里使用了CLC指令之后，用JNB指令跳转到0x4038A8,所以在0x4038A7处nop掉即可。这是第一种花指令，使用的较多。</p>
+<p><img src="http://omkxe7cq3.bkt.clouddn.com/reserve%EF%BC%88%E4%B8%80%EF%BC%8902.png" alt=""><br>　　（2）这种是在函数4038D8里（下一行）对esp进行重新计算，并通过RETN返回真确的地址。如上，返回的正确地址为4038DCE。所以只需将4038DD处改为0x90(nop)即可。这一片去完就能看到sub_403894函数了。<br><img src="http://omkxe7cq3.bkt.clouddn.com/reserve%EF%BC%88%E4%B8%80%EF%BC%8903.png" alt=""><br>　　上面就是去除花指令的过程，下面的就是简单地一个算法，经过分析得到flag是：codebywidesoft。</p>
 
   </article>
   <div class="random-toc-area">
@@ -263,18 +193,20 @@ int main(int argc, char* argv[])
   <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
   <div class="random-toc">
     <h2>目录</h2>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#pwnable学习笔记-第一更"><span class="toc-text">pwnable学习笔记 第一更</span></a></li></ol>
+    
   </div>
 </div>
 
   
 <nav id="pagination">
   
-
+    <a href="/2017/03/12/pwnable学习笔记-第一更/" class="prev">&larr; 上一篇 pwnable学习笔记 第一更</a>
   
 
   
-    <a href="/2017/02/04/Reserve系列题目浅析（一）/" class="next">下一篇 Reserve系列题目浅析（一） &rarr;</a>
+
+  
+    <a href="/2017/01/20/合天实验室《pwn基础练习》学习总结/" class="next">下一篇 合天实验室《pwn基础练习》学习总结 &rarr;</a>
   
 </nav>
 
@@ -284,7 +216,7 @@ int main(int argc, char* argv[])
 
 
       
-      <div class="ds-thread" data-thread-key="2017/03/12/pwnable学习笔记-第一更/" data-title="pwnable学习笔记 第一更" data-url="http://lc.dropsec.xyz/2017/03/12/pwnable学习笔记-第一更/"></div>
+      <div class="ds-thread" data-thread-key="2017/02/04/Reserve系列题目浅析（一）/" data-title="Reserve系列题目浅析（一）" data-url="http://lc.dropsec.xyz/2017/02/04/Reserve系列题目浅析（一）/"></div>
       
       
       
