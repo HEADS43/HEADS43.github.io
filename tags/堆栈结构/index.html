@@ -256,6 +256,19 @@ var isTriggerAnalytics = !( true && isIgnoreHost );
 
 </script>
 
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?5f4e4a6f4f1622238c87dd7816a694a9";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
 
 
 
