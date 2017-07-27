@@ -120,7 +120,7 @@
     <p class="page-title-sub">
       <span id = "post-title-date">撰写于 2017-07-12</span>
       
-        <span id = "post-title-updated">修改于 2017-07-25</span>
+        <span id = "post-title-updated">修改于 2017-07-27</span>
       
       
       
@@ -145,13 +145,10 @@
 <p>以下是用来实现的代码，其实很简单，只要写一段能够有调用到另一个函数的代码就好了,这是我在Bean_lee大佬的文章上盗来的代码（跟写代码很low的自己绝交两分钟）：</p>
 <p>test.c：</p>
 <p><pre><br> int myglob = 42;<br> int ml_util_func(int a)<br>   {<br>      return a + 1;<br>   }<br> int ml_func(int a, int b)<br>   {<br>      int c = b + ml_util_func(a);<br>      myglob += c;<br>      return b + myglob;<br>   }<br></pre><br>olddriver：</p>
-<p><pre></pre></p>
-<p> #define _GNU_SOURCE</p>
-<p> #include &lt;link.h&gt;</p>
-<p> #include &lt;stdlib.h&gt;</p>
-<p> #include &lt;stdio.h&gt;</p>
-<p> #include&lt;time.h&gt;<br> static int header_handler(struct dl_phdr_info<em> info, size_t size, void</em> data)<br> {<br>    int j;<br>    printf(“name=%s (%d segments) address=%p\n”,<br>             info-&gt;dlpi_name, info-&gt;dlpi_phnum, (void<em>)info-&gt;dlpi_addr);<br>    for ( j = 0; j &lt; info-&gt;dlpi_phnum; j++)<br>    {<br>      printf(“\t\t header %2d: address=%10p\n”, j,<br>                 (void</em>) (info-&gt;dlpi_addr + info-&gt;dlpi_phdr[j].p_vaddr));<br>      printf(“\t\t\t type=%u, flags=0x%X\n”,<br>                 info-&gt;dlpi_phdr[j].p_type, info-&gt;[j].p_flags);<br>    }<br>    printf(“\n”);<br>    return 0;<br> }</p>
-<p> extern int ml_func(int, int);<br> int main(int argc, const char* argv[])<br> {<br>    dl_iterate_phdr(header_handler, NULL);<br>    int t = ml_func(argc, argc);<br>    sleep(12);<br>    return t;<br> }<br><br>首先使用下面的第一条命令来将test.c编译成一个位置无关的动态共享库，然后再使用第二条指令将olddriver.c和前面生成的动态共享库进行链接，生成可执行文件olddriver用于下面的调试。<br>    <pre><br>    gcc -share -fpic -g test.so test.c<br>    gcc -o olddriver -g olddriver.c ./test.so<br>    </pre><br>现在我们使用gdb+peda对olddriver进行调试：</p>
+<pre>
+
+<p> static int header_handler(struct dl_phdr_info<em> info, size_t size, void</em> data)<br> {<br>    int j;<br>    printf(“name=%s (%d segments) address=%p\n”,<br>             info-&gt;dlpi_name, info-&gt;dlpi_phnum, (void<em>)info-&gt;dlpi_addr);<br>    for ( j = 0; j &lt; info-&gt;dlpi_phnum; j++)<br>    {<br>      printf(“\t\t header %2d: address=%10p\n”, j,<br>                 (void</em>) (info-&gt;dlpi_addr + info-&gt;dlpi_phdr[j].p_vaddr));<br>      printf(“\t\t\t type=%u, flags=0x%X\n”,<br>                 info-&gt;dlpi_phdr[j].p_type, info-&gt;[j].p_flags);<br>    }<br>    printf(“\n”);<br>    return 0;<br> }</p>
+<p> extern int ml_func(int, int);<br> int main(int argc, const char* argv[])<br> {<br>    dl_iterate_phdr(header_handler, NULL);<br>    int t = ml_func(argc, argc);<br>    sleep(12);<br>    return t;<br> }<br></p></pre><br>首先使用下面的第一条命令来将test.c编译成一个位置无关的动态共享库，然后再使用第二条指令将olddriver.c和前面生成的动态共享库进行链接，生成可执行文件olddriver用于下面的调试。<br>    <pre><br>    gcc -share -fpic -g test.so test.c<br>    gcc -o olddriver -g olddriver.c ./test.so<br>    </pre><br>现在我们使用gdb+peda对olddriver进行调试：<p></p>
 <p>我们知道olddriver调用了共享库中的ml_func函数，那首先来看看main函数：</p>
 <p><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A1.png" alt=""></p>
 <p>从上面的函数中可以看到，main()函数在0x804871f对共享库中的ml_func函数调用，地址是0x80484e0，那么我们看看这个地址具体是什么，反编译如下：<br><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A2.png" alt=""></p>
