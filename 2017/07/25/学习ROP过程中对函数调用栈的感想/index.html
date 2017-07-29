@@ -1,8 +1,6 @@
 
 
 
-  
-
 
 
 
@@ -18,9 +16,13 @@
   
   
   
-    <meta name="description" content="One To One,then many a you !">
+    <meta name="description" content="最近在学习ROP技术，深深感觉到自身和大佬之间的差距，但是这并不能阻止我向大佬看齐的脚步。
+在这个过程中，使用ROP来实现栈溢出，那么就需要很透彻的了解栈的结构，和函数调用栈的具体实现，查了很多资料，终于对函数调用栈的过程有较为清晰的认识。
+首先栈是一个先进后出的数据存储结构，这个大家都知道，但是函数在调用栈的过程是怎样实现的呢？这就是我们今天需要解决的问题了。
+也许来个图可以说的清楚点：
+...">
   
-  <title>标签: 堆栈结构 [ HEADS43 ]</title>
+  <title>学习ROP过程中对函数调用栈的感想 [ HEADS43 ]</title>
   
     <link rel="alternate" href="/atom.xml" title="HEADS43">
   
@@ -41,6 +43,15 @@
 <body>
 <div class="side-navigate hide-area">
   
+  
+    <div class="item next">
+      <a href="/2017/07/12/延迟绑定技术及实现/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        延迟绑定技术及其实现
+      </div>
+    </div>
   
 </div>
 <div id="outer-container" class="hide-area">
@@ -73,7 +84,7 @@
           </li>
         
           
-            <li class="active">
+            <li>
           
             <a href="/tags">标签</a>
             
@@ -105,82 +116,71 @@
     <div id="content-inner">
       
       
-  <div id="tag">
-    <h1>堆栈结构</h1>
-    
+  <article id="post">
+    <h1>学习ROP过程中对函数调用栈的感想</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2017-07-25</span>
+      
+        <span id = "post-title-updated">修改于 2017-07-29</span>
+      
+      
+      
+      <span id = "post-title-tags">
+      标签
       
       
         
-      
-      
-    
-      
-      
         
+        <a href="/tags/栈结构/">栈结构</a>
       
+      </span>
       
+    </p>
     
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/12/20/堆栈结构浅析/">
-  
-    堆栈结构浅析
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">12-20</span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/堆栈结构/">堆栈结构</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
-      
-      
-        
-      
-      
-    
-      
-      
-        
-      
-      
-    
-      
-      
-        
-      
-      
+    <hr>
+<p>最近在学习ROP技术，深深感觉到自身和大佬之间的差距，但是这并不能阻止我向大佬看齐的脚步。</p>
+<p>在这个过程中，使用ROP来实现栈溢出，那么就需要很透彻的了解栈的结构，和函数调用栈的具体实现，查了很多资料，终于对函数调用栈的过程有较为清晰的认识。</p>
+<p>首先栈是一个先进后出的数据存储结构，这个大家都知道，但是函数在调用栈的过程是怎样实现的呢？这就是我们今天需要解决的问题了。</p>
+<p>也许来个图可以说的清楚点：</p>
+<p><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%A0%88%E7%BB%93%E6%9E%84%E5%9B%BE.jpg" alt=""></p>
+<p>图中给出的是函数嵌套调用的栈结构图，上面部分是主调函数（Caller Function）的栈帧，下面部分是被调函数（Callee Function）的栈帧，EBP和ESP分别是栈帧的帧基址指针和栈顶指针，“m（%ebp）”表示以EBP为基址、偏移量为m个字节的内存中的内容。主调函数需要调用被调函数时，会先在自己的栈帧中预留一定的空间，然后压栈被调函数的n个参数，往下是主调函数自身的返回地址。再下面跟着的就是被调函数的栈帧，先是被调函数栈帧的帧基址EBP，然后是被调函数需要使用到的一些局部变量，最后是被调函数自身的返回地址。</p>
+<p>看完函数的栈帧结构，我们再来看看函数调用时实现流程：</p>
+<p>一般函数的调用都是嵌套调用，在主调函数调用被调函数时，先将被调函数的参数压入主调函数的栈帧，然后是主调函数的返回地址压栈，存放在EIP中，接着是被调函数的栈帧的初始化，压栈该栈帧的基地址EBP，再往上压栈的是被调函数中需要调用的一些局部变量，如果还有下一层被调函数，压栈其参数，否则跳过这步，最后压栈的就是被调函数自身的返回地址。然后在函数被调用结束后，先将被调函数的返回地址出栈，接着分别是被调函数的局部变量，被调函数的栈帧的基地址EBP，这样在将整个被调函数的栈帧出栈后，露出来的就是主调函数的ret，然后就可以返回主调函数对应的代码段去执行主调函数，这样就是一个函数调用的大概过程，来一张庆大佬的总结图吧（日常膜大佬，但是感觉如果倒着放会容易理解）：<br><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%A0%88%E7%9A%84%E8%BF%87%E7%A8%8B%E5%9B%BE.jpg" alt=""></p>
+<p>补充两点：</p>
+<ol>
+<li>为何在下面这张图中在main函数前还有函数？庆大佬的解释是前面还有一些每个程序在被装入内存前都会经历的操作（的确是还有这种操作2333）</li>
+<li>所谓的栈帧初始化是什么？其实就是我们通过汇编代码进入一个函数看到的前三行代码，先将EBP值push存放，然后是将ESP赋值给EBP，然后是ESP减去栈大小，这样开辟出一块从EBP到现在的ESP的空间作为一个栈帧空间来使用，此时的ESP作为栈顶指针，一直指向栈顶，而EBP则是栈帧的基地址指针。</li>
+</ol>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
     
   </div>
+</div>
+
+  
+<nav id="pagination">
+  
 
   
 
+  
+    <a href="/2017/07/12/延迟绑定技术及实现/" class="next">下一篇 延迟绑定技术及其实现 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
       
+      
+      <div id="uyan_frame"></div>
       
       
     </div>
@@ -199,6 +199,10 @@
 </div>
 
 
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2138711"></script>
+<!-- UY END -->
 
 <div id="user-card">
   <div class="center-field">
