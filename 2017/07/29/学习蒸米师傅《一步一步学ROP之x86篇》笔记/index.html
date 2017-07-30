@@ -1,0 +1,379 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="HEADS43">
+  
+  
+  
+  
+    <meta name="description" content="0x00 ROP及保护机制介绍
+ROP全称是返回导向编程（Return-oriented programming），这是一种高级的内存攻击技术，可以用来绕过现代操作系统的各种通用防御。战战兢兢复制蒸米师傅的话，下面是我的浅显的理解：这也就是一种攻击手段，运用一些系统或程序存在的漏洞，通过ROP链作为桥梁进入到目标系统。再下面也主要是一些个人在读这篇文章并动手操作时遇到的问题及解决，如有错误，...">
+  
+  <title>读蒸米大神《一步一步学ROP之x86篇》笔记 [ HEADS43 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="HEADS43">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+  
+    <div class="item next">
+      <a href="/2017/07/25/学习ROP过程中对函数调用栈的感想/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        学习ROP过程中对函数调用栈的感想
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="/css/avatar.jpg"/>
+          <div id="homelink">HEADS43</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于我</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>读蒸米大神《一步一步学ROP之x86篇》笔记</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2017-07-29</span>
+      
+        <span id = "post-title-updated">修改于 2017-07-30</span>
+      
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/PWN/">PWN</a>
+      
+      </span>
+      
+    </p>
+    
+    <hr>
+<p><strong>0x00 ROP及保护机制介绍</strong></p>
+<p>ROP全称是返回导向编程（Return-oriented programming），这是一种高级的内存攻击技术，可以用来绕过现代操作系统的各种通用防御。战战兢兢复制蒸米师傅的话，下面是我的浅显的理解：这也就是一种攻击手段，运用一些系统或程序存在的漏洞，通过ROP链作为桥梁进入到目标系统。再下面也主要是一些个人在读这篇文章并动手操作时遇到的问题及解决，如有错误，烦请指正。</p>
+<p>我们可以利用栈溢出的漏洞进行攻击，那么系统开发及防御者也想处各种针对的方法，常见的有三种保护机制：堆栈不可执行（DEP/NX）、内存地址随机化（ASLR）和栈保护（Stack Protector）。</p>
+<p><strong>0x01 程序流劫持（Control Flow Hijack）</strong></p>
+<p>这是最基础的，将三种保护机制都关闭，让难度降到最低，首先就是使用几条命令在编译过程中就关闭这三种保护，使得我们只需考虑如何去利用漏洞，不必去考虑去绕过这些保护机制。</p>
+<p>看到程序可以看出它有一个明显可以利用的栈溢出，就是它定义的buf是128个字节，但是read函数并不是只读取128个字节，所以可以利用buf去进行溢出攻击。下面通过内存出错的地址来得到要填充的大小位140个字节，其实也可以在调试程序的过程中使用gdb或者IDA来计算得到，后者只适合用来验证，或者理清原理，下面我们看看使用GDB调试的结果：</p>
+<p><img src="http://omkxe7cq3.bkt.clouddn.com/ROP%E5%AD%A6%E4%B9%A0.png" alt=""></p>
+<p>从图中我们可以看出，先是栈帧的初始化，栈帧大小是0x98,然后是将read函数的第三个参数256压栈，再是buf数组，大小为0x88，下面就是第一个参数。这里我们可以看到buf数组的起始地址是esp-0x88，所以他到esp的距离是0x88，也就是136个字节，再加上ESP本身的4个字节，所以我们要覆盖的也就是140个字节，也就是上面算出来的140.</p>
+<p>知道溢出点，接着是shellcode的构建，这里还是有点捉摸不透，挖坑日后填。</p>
+<p>下面的ret地址也可以使用蒸米师傅文中提到的方式获得，那我们来看看最后得到的payload的构造，payload=shellcode+’A’*(140-len(shellcode))+p32(ret)，在这个结构中，我一开始不知道为何这样编排，后来在仔细学习了解函数调用时栈结构后有所理解，先是返回地址压栈这个没啥疑问，就是为啥这填充字符长度为啥时140减去shellcode的长度，因buf数组到返回地址之间一共就是140个字节大小，而我们要执行shellcode也要存放在这140个字符大小的空间里，所以我们填充的字符就应该是140减去shellcode的长度。</p>
+<p><strong>0x02 利用ret2libc技术绕过DEp保护</strong></p>
+<p>我们在编译过程中只把DEP保护开启就行，DEP就是堆栈不可执行，那么我们上面所用的payload就行不通，因为上面攻击方式的原理就是在栈上直接运行shellcode来夺取shell权限的，现在在对战中不能够执行函数，那么怎么办呢，我们可以利用程序的libc库中的其他函数，比如sysytem函数，就算其他所有函数都不能调用libc库中的函数也坑定是可以调用的。</p>
+<p>首先需要用到的system函数地址，/bin/sh地址，我们也都可以通过蒸米师傅的文章中所述方式获得，那我们还是来看看这个payload，进而了解这个里面的实现过程。因为这里的堆栈不可使用，那我们可以利用libc库中的其他函数来实现，那我们要如何到这个我们调用的system函数的地方呢？我们可以相当于是在这个函数的的栈帧里面在构建一个system的栈帧，让程序直接跳转到system函数中去运行。我们看到的是先是140填充字符，然后在原来应该出现该函数帧基址EBP的位置上是system函数的地址，下面是返回地址，这个就不重要了，在下面是bin地址，最先压入，已经不再这个函数对应的栈帧中，所以这里是充当system函数的参数来使用的。那么在函数调用时，先是过了140个填充字符，接着就是system的返回地址，程序这会吧system当成这个栈中的一个栈帧，然后就去运行它，这样就正如我们所愿，得到shell权限，至于那个ret地址，无关紧要，我们不用去关心它在我们调用完shell权限后是否返回到正确的地址上去。</p>
+<p>个人见解就是这种ret2libc的攻击方式就是利用函数调用时栈结构的一些弱点来实现自己的目的，就是既然不让我在栈上面运行，那我就直接将函数的调用转移到libc库中的函数去实现，这样不需要在堆栈上执行我照样能够拿到权限，达到我们的目标。还有一点感触就是，一定要对函数调用时栈的结构有足够的了解，不然很难去理解这些攻击手段背后的原理，即使知道套路，也就知识知道套路，并没有真正的为你所用。（装完逼了，该跑路了2333）</p>
+<p><strong>0x03 通过ROP绕过ASLR和DEP保护</strong></p>
+<p>这个就是在上一个的基础上让内存地址随机化，进而混淆我们视听，让给我们找不到真实的地址进行下一步的操作。</p>
+<p>蒸米师傅的大体思路是：先leak出来的libc.so共享库中的函数在内存中的地址，然后根据这些地址通过计算相对偏移地址的方法来得到system和bin地址，这样又可以使用前面的ret2libc的攻击方法。<br>这个攻击方式具体的实现是：我们利用出现程序中的libc库中的函数来计算system函数和bin在内存中的地址，原理是elf文件的延迟绑定技术（我也有一篇博客是讲解这个，可以参阅一下），将所有函数都绑定到got表中，这样他们之间的相对距离就是固定的，也就是能够通过计算得出我们想要的函数地址。但是看蒸米师傅的脚本还有有点懵，下面半部分就是我们上面所说的，但是它的上面部分还有点不理解玄妙，看来还是道行不够，需要继续努力了。</p>
+<p>还有一点不明白的是，这个既然提到了延迟绑定，为啥不用ret2dlresolve技术呢?这个还没搞懂，接下来就是研究研究这个ret2dlresolve技术，也要将ROP中一些疑点逐一搞清楚。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+
+  
+
+  
+    <a href="/2017/07/25/学习ROP过程中对函数调用栈的感想/" class="next">下一篇 学习ROP过程中对函数调用栈的感想 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by HEADS43 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2138711"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/css/avatar.jpg">
+    <p id="description">One To One,then many a you !</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/HEADS43/HEADS43.github.io.git">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/HEADS43">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/5786955497/home?wvr=5">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://www.douban.com/people/151934023/">
+        
+          <i class="icon iconfont douban">&#xe609;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?5f4e4a6f4f1622238c87dd7816a694a9";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+
+var backgroundColor = "D7CCC8";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+
