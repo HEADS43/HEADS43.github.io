@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="溢出漏洞," />
 
 
 
@@ -97,16 +97,20 @@
 
 
 
-<meta name="description" content="One To One,then many a you !">
-<meta property="og:type" content="website">
-<meta property="og:title" content="HEADS43">
-<meta property="og:url" content="http://lc.dropsec.xyz/archives/2017/03/index.html">
+<meta name="description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 0x00 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，">
+<meta name="keywords" content="溢出漏洞">
+<meta property="og:type" content="article">
+<meta property="og:title" content="整数溢出漏洞原理及实例分析">
+<meta property="og:url" content="http://lc.dropsec.xyz/2017/10/25/整数溢出整理/index.html">
 <meta property="og:site_name" content="HEADS43">
-<meta property="og:description" content="One To One,then many a you !">
+<meta property="og:description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 0x00 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1flkqs10xdmj30dy0a474c.jpg">
+<meta property="og:updated_time" content="2017-11-17T00:00:11.802Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="HEADS43">
-<meta name="twitter:description" content="One To One,then many a you !">
+<meta name="twitter:title" content="整数溢出漏洞原理及实例分析">
+<meta name="twitter:description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 0x00 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/006jDttTly1flkqs10xdmj30dy0a474c.jpg">
 
 
 
@@ -136,13 +140,13 @@
 
 
 
-  <link rel="canonical" href="http://lc.dropsec.xyz/archives/2017/03/"/>
+  <link rel="canonical" href="http://lc.dropsec.xyz/2017/10/25/整数溢出整理/"/>
 
 
 
 
 
-  <title>归档 | HEADS43</title>
+  <title>整数溢出漏洞原理及实例分析 | HEADS43</title>
   
 
 
@@ -171,7 +175,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -299,74 +303,309 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
-
-      <span class="archive-page-counter">
-        
-        
-        
-          
-        
-        嗯..! 目前共计 8 篇日志。 继续努力。
-      </span>
-
-      
-
-        
-        
-        
-
-        
-          
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2017">2017</h1>
-          </div>
-        
-        
-
-        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lc.dropsec.xyz/2017/10/25/整数溢出整理/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HEADS43">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HEADS43">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2017/03/12/pwnable学习笔记-第一更/" itemprop="url">
-              
-                <span itemprop="name">pwnable学习笔记 第一更</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">整数溢出漏洞原理及实例分析</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-03-12T14:51:44+08:00"
-              content="2017-03-12" >
-          03-12
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-25T12:41:24+08:00">
+                2017-10-25
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
 
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/10/25/整数溢出整理/" class="leancloud_visitors" data-flag-title="整数溢出漏洞原理及实例分析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
+      
 
+      
+        <p>注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。</p>
+<h1 id="0x00-整数溢出基本原理"><a href="#0x00-整数溢出基本原理" class="headerlink" title="0x00 整数溢出基本原理"></a>0x00 整数溢出基本原理</h1><p>整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。</p>
+<p>在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，所有位都是数值位。在这些整数中常见的类型有8位的单字节型（byte）和布尔型（bool），16位的短整形（short int）和32位的长整形（int）。</p>
+<a id="more"></a>
+<p>下面就是一个较为简单的整数溢出的例子：</p>
+<pre><code>#include &lt;stdio.h&gt;    
+int main()    
+{    
+    int InputTest;                    
+    unsigned short OutputTest;        
+
+    printf(&quot;InputTest:&quot;);    
+    scanf(&quot;%d&quot;, &amp;InputTest);    
+    OutputTest = InputTest;  //造成整数溢出  
+
+    printf(&quot;OutputTest:%d\n&quot;, OutputTest);    
+
+    getchar();    
+    return 0;    
+}    
+</code></pre><p>上面的这个示例程序实现的功能很简单，只是简单的将输入的长整型（int型）的变量复制给无符号的短整形变量（short int型），然后输出。因为将长整型数的长度是32位，放到比它本身小的的短整型数（16位）的存储空间中，因此就会构成溢出条件，那么也就会形成较为简单的整数溢出漏洞。</p>
+<p>无符号的16位整数可以表示0~65535范围内的数值，那么我们就来测试一下对于这个程序分别输入65536、65536、65537，得出的结果都是什么：</p>
+<p><img src="http://ww1.sinaimg.cn/large/006jDttTly1flkqs10xdmj30dy0a474c.jpg" alt=""></p>
+<p>可以看出，如果输入的数不超过65535时，程序都能正确的输出显示输入的数，但是当输入的数大于65535时，输出的结果就变得不正确，这就是溢出造成的结果，如果对溢出的数据进行精心构造，也就可以让程序按照我们的目的去运行。</p>
+<h1 id="0x01-动态调试初探溢出原理"><a href="#0x01-动态调试初探溢出原理" class="headerlink" title="0x01 动态调试初探溢出原理"></a>0x01 动态调试初探溢出原理</h1><p>还是上面的那个程序，动态调试一波，搞一波事情，看看溢出的流程具体是如何实现。</p>
+<p>由于编译器的问题，不能够编译出想要的结果，进而在调试过程中还有待改进，先留下大概步骤，挖坑日后补。<br>使用OD载入找到scanf函数对应的位置，通过分析堆栈中的参数，可知输入的内容会保存在eax寄存器中存放的地址内存中，然后我们会发现对比两次输入不一样，输入完后会进行一个取位运算，就是将输入的内容与0xFFFF相加，这也就是将地址上的低十六位取出舍弃高十六位的数据，然后进行输出。</p>
+<h1 id="0x02-常见的整数溢出类型"><a href="#0x02-常见的整数溢出类型" class="headerlink" title="0x02 常见的整数溢出类型"></a>0x02 常见的整数溢出类型</h1><p>常见的整数溢出主要由三类整数操作引起的：无符号整数的下溢和上溢、符号问题和截断问题。</p>
+<p><strong>无符号整数的下溢和上溢</strong></p>
+<p>无符号整数的下溢由于无符号整数没能识别负数造成的：</p>
+<pre><code>BOOL fun(size_t cbSize)    
+{    
+    if( cbSize &gt; 1024 )    
+    {    
+        return FALSE;    
+    }    
+    char *pBuf = new char[cbSize-1];    
+    // 存在溢出隐患    
+    memset(pBuf, 0x90, cbSize-1);    
+    ...    
+    return TRUE;    
+}    
+</code></pre><p>从上述的示例代码中，在new分配内存后，程序没有检测调用结果的正确与否，这样的话，如果cbSize是0的时候，cbSize就是-1，但是memset的第三个参数是无符号的类型的，那么-1将被看作是正的0xFFFFFFFF，这样系统是无法操作这么大的空间，程序也就随之崩溃。</p>
+<p>无符号的上溢其实额和下溢并不是十分对立的两个问题，上溢的话就是由于在计算超过0xFFFFFFFF的加法时，会发生进位，从而导致结果并不是我们想要的结果。</p>
+<pre><code>BOOL fun(char *s1, size_t len1, char *s2, size_t len2)    
+{    
+    if(len1 + len2 + 1 &gt; 1024)    
+    {    
+        return FALSE;    
+    }    
+    char pBuf = new char[len1 + len2 + 1];    
+    if(pBuf == NULL)    
+    {    
+        return FALSE;    
+    }    
+    memcpy(pBuf, s1, len1);    
+    // 存在溢出隐患    
+    memcpy(pBuf + len1, s2, len2);    
+    ...    
+    return TRUE;    
+}    
+</code></pre><p>从上面的代码中我们可以看出，在调用之前也进行了相应的检测，但是却仍然存在整数溢出漏洞。因为len1和len2都是无符号整数，如果len1=8，len2=0xFFFFFFFF，那么len1+len2+1就等于8，也就是我们只是在new时给pBuf分配了8个字节的空间，但是下面的memcpy(pBuf+len1,s2,len2)却要将0xFFFFFFFF长的字符串复制到这个空间里，这样也就会造成程序的崩溃。</p>
+<p><strong>符号问题</strong></p>
+<p>符号问题也有三种情况：1）有符号整数和无符号整数之间的转化；2）有符号整数的运算；3）有符号数之间的转化。</p>
+<p>个人觉得这类问题也就是因为符号问题，使得整数操作不能够到达原来既定的目的，结果不是所应得的结果，进而就会导致溢出。比如上面的例子将负的有符号整数存放在无符号整数的存储空间中，这样系统会将这个数看作是一个很大的正的无符号整数，从而使得被操作的数能造成溢出并达到我们的目的。</p>
+<p><strong>截断问题</strong></p>
+<p>截断问题，也就是上面第一个例子中的情况，大多是因为高位数的整数要复制或者填充到低位数的整数中，进而造成的溢出。</p>
+<p>因为当定义一个变量时，它在内存地址中的存储空间也就相应的固定，如果要将一个高位数存放在它的存储空间，这个内存空间肯定是不够用的，又因为这个变量的大小只有这么大，所以输出的只能是这个变量大小存储空间上的数据，这样高位数比这个变量多出来的几位就无法输出，操作数不是按照程序预计的进行，那么输出的结果也就会错误。</p>
+<p>其实这三种分类归结到底还是因为将太大的数放到不够大的空间导致的溢出现象，这三种类别的问题也是相互联系的，无符号整数的下溢和上溢是因为经过整数运算后截断问题，符号问题则是有可能是由整数运算引发的截断问题，说到底，还是因为计算机中有符号整数和无符号整数之间的转化以及一些不同数据类型导致会有整数溢出的发生。</p>
+<h1 id="0x03-整数溢出引出的问题"><a href="#0x03-整数溢出引出的问题" class="headerlink" title="0x03 整数溢出引出的问题"></a>0x03 整数溢出引出的问题</h1><p>上面也讲了一些整数溢出的原理性的东西，但是也不难看出，整数溢出很难发现，发现了造成溢出了却很难控制并为我们所利用，下面就讲一些能够运用整数溢出的地方。</p>
+<p>整数溢出属于缓冲区溢出的一种，泉哥把它分为基于栈的整数溢出和基于堆的整数溢出，个人觉得分为引起栈溢出的整数溢出和引起堆溢出的整数溢出更好一些，虽说不是很学术，但是对于新手来说更容易理解一些。也就是我们往往就是会通过利用整数溢出来控制缓冲区溢出进而实现我们的目的。</p>
+<p>总是感觉只是将整数溢出的原理有点不是很容易讲明白，下面就举两个泉哥书中的例子来说明一下这两种整数溢出的利用原理，通过实例来理清楚里面的运行机制。</p>
+<p><strong>下面是整数溢出引起栈溢出的示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;string.h&quot;
+
+int main(int argc,char *argv)
+{
+    int i;
+    char buf[8];  //栈缓冲区
+    unsigned short int size;  //无符号短整数取值范围：0~65535
+    char overflow[65550];
+
+    memset(overflow,65,sizeof(overflow));  //填充为“A”字符
+
+    printf(&quot;请输入数值：\n&quot;);
+    scanf(&quot;%d&quot;,&amp;i);
+
+    size = i;
+    printf(&quot;size:%d\n&quot;,size);   //输出系统识别出来的size数值
+    printf(&quot;i:%d\n&quot;,i);   //输出系统识别出来的i数据
+
+    if(size&gt;8)   //边界检查
+        return -1；
+    memcpy(buf,overflow,i);  //栈溢出
+
+    return 0;
+}
+</code></pre><p>上述的示例代码的主要功能是下面的memcpy()函数的实现，就是overflow数组中前i位复制给大小为8的buf数组中，在复制函数前面还进行了一次边界检查，但是并不能阻止溢出情况的发生。假如输入的i大于65535且小于65544时，因为size变量是无符号短整形数，它就会发生类似于第一个例子中的截断溢出情况，绕过看着很安全的边界检查，这样造成栈溢出，进而获取栈的控制权，以及程序的控制权。</p>
+<p><strong>下面是整数溢出引起堆溢出的示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;windows.h&quot;
+
+int main(int argc,char * argv)
+{
+    int* heap;
+    unsigned short int size;   无符号短整数取值范围i：0~65535
+    char *pheap1,*pheap2;
+    HANDLE hHeap;
+
+    printf(&quot;输入size数值：\n&quot;);
+    scanf(&quot;&amp;d&quot;,&amp;size);
+    hHeap = HeapCreate(HEAP_GENRATE_EXCEPTIONS,0x100,0xfff);
+    if(size &lt;= 0x50)
+    {
+        size -=5;
+        printf(&quot;size:%d\n&quot;,size);
+        pheap1 = HeapAlloc(hHeap,0,size);
+        pheap2 = HeapAlloc(hHeap,0,0x50);
+    }
+
+    HeapFree(hHeap,0,pheap1);
+    HeapFree(hHeap,0,pheap2);
+
+    return 0;
+}
+</code></pre><p>由于对于堆溢出的原理不太擅长，就将泉哥书上的理解重复一下，上述代码中的unsigned short int整数类型，当它小于5时，比如size=2，size减去5会得到负数，但是由于unsigned short int 取值范围的限制导致无法识别负数，反而得到整数65533，最后分配到过大的堆块，从而导致溢出覆盖到对管理结构。</p>
+
+      
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/溢出漏洞/" rel="tag"># 溢出漏洞</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/29/学习蒸米师傅《一步一步学ROP之x86篇》笔记/" rel="next" title="读蒸米大神《一步一步学ROP之x86篇》笔记">
+                <i class="fa fa-chevron-left"></i> 读蒸米大神《一步一步学ROP之x86篇》笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_fav">收藏夹</a>
+<a class="jiathis_button_copy">复制网址</a>
+<a class="jiathis_button_email">邮件</a>
+<a class="jiathis_button_weixin">微信</a>
+<a class="jiathis_button_qzone">QQ空间</a>
+<a class="jiathis_button_tqq">腾讯微博</a>
+<a class="jiathis_button_douban">豆瓣</a>
+<a class="jiathis_button_share">一键分享</a>
+
+<a href="http://www.jiathis.com/share?uid=2140465" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  summary:"",
+  shortUrl:false,
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+      
+    </div>
+  </div>
 
 
           </div>
@@ -374,6 +613,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
 
         </div>
         
@@ -394,8 +639,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
             <img class="site-author-image" itemprop="image"
@@ -478,6 +732,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-整数溢出基本原理"><span class="nav-number">1.</span> <span class="nav-text">0x00 整数溢出基本原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-动态调试初探溢出原理"><span class="nav-number">2.</span> <span class="nav-text">0x01 动态调试初探溢出原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-常见的整数溢出类型"><span class="nav-number">3.</span> <span class="nav-text">0x02 常见的整数溢出类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-整数溢出引出的问题"><span class="nav-number">4.</span> <span class="nav-text">0x03 整数溢出引出的问题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -598,6 +868,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
 
   
 
@@ -623,6 +897,10 @@
   
     
 
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2138711"></script>
+      <!-- UY END -->
     
   
 

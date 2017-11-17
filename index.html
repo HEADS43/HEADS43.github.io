@@ -314,6 +314,143 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lc.dropsec.xyz/2017/10/25/整数溢出整理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HEADS43">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HEADS43">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/10/25/整数溢出整理/" itemprop="url">整数溢出漏洞原理及实例分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-25T12:41:24+08:00">
+                2017-10-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/10/25/整数溢出整理/" class="leancloud_visitors" data-flag-title="整数溢出漏洞原理及实例分析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。</p>
+<h1 id="0x00-整数溢出基本原理"><a href="#0x00-整数溢出基本原理" class="headerlink" title="0x00 整数溢出基本原理"></a>0x00 整数溢出基本原理</h1><p>整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。</p>
+<p>在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，所有位都是数值位。在这些整数中常见的类型有8位的单字节型（byte）和布尔型（bool），16位的短整形（short int）和32位的长整形（int）。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/10/25/整数溢出整理/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://lc.dropsec.xyz/2017/07/29/学习蒸米师傅《一步一步学ROP之x86篇》笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1325,7 +1462,7 @@ l2:
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1338,7 +1475,7 @@ l2:
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
