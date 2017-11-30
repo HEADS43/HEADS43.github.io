@@ -97,13 +97,13 @@
 
 
 
-<meta name="description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 0x00 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，">
+<meta name="description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，所有位都是">
 <meta name="keywords" content="溢出漏洞">
 <meta property="og:type" content="article">
 <meta property="og:title" content="整数溢出漏洞原理及实例分析">
 <meta property="og:url" content="http://lc.dropsec.xyz/2017/10/25/整数溢出整理/index.html">
 <meta property="og:site_name" content="HEADS43">
-<meta property="og:description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 0x00 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，">
+<meta property="og:description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，所有位都是">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1flkqs10xdmj30dy0a474c.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1fm0ddaxgmmj30kz0b5gm2.jpg">
@@ -111,10 +111,10 @@
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1fm0de2hu7cj30az03e3yf.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1fm0debmhu9j30en03ydfs.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1fm0dek9f7fj30ax05t3yk.jpg">
-<meta property="og:updated_time" content="2017-11-30T12:11:56.879Z">
+<meta property="og:updated_time" content="2017-11-30T13:39:25.560Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="整数溢出漏洞原理及实例分析">
-<meta name="twitter:description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 0x00 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，">
+<meta name="twitter:description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，所有位都是">
 <meta name="twitter:image" content="http://ww1.sinaimg.cn/large/006jDttTly1flkqs10xdmj30dy0a474c.jpg">
 
 
@@ -401,7 +401,7 @@
 
       
         <p>注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。</p>
-<h1 id="0x00-整数溢出基本原理"><a href="#0x00-整数溢出基本原理" class="headerlink" title="0x00 整数溢出基本原理"></a>0x00 整数溢出基本原理</h1><p>整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。</p>
+<h1 id="整数溢出基本原理"><a href="#整数溢出基本原理" class="headerlink" title="整数溢出基本原理"></a>整数溢出基本原理</h1><p>整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。</p>
 <p>在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，所有位都是数值位。在这些整数中常见的类型有8位的单字节型（byte）和布尔型（bool），16位的短整形（short int）和32位的长整形（int）。</p>
 <a id="more"></a>
 <p>下面就是一个较为简单的整数溢出的例子：</p>
@@ -424,7 +424,7 @@ int main()
 <p>无符号的16位整数可以表示0~65535范围内的数值，那么我们就来测试一下对于这个程序分别输入65536、65536、65537，得出的结果都是什么：</p>
 <p><img src="http://ww1.sinaimg.cn/large/006jDttTly1flkqs10xdmj30dy0a474c.jpg" alt=""></p>
 <p>可以看出，如果输入的数不超过65535时，程序都能正确的输出显示输入的数，但是当输入的数大于65535时，输出的结果就变得不正确，这就是溢出造成的结果，如果对溢出的数据进行精心构造，也就可以让程序按照我们的目的去运行。</p>
-<h1 id="0x01-动态调试初探溢出原理"><a href="#0x01-动态调试初探溢出原理" class="headerlink" title="0x01 动态调试初探溢出原理"></a>0x01 动态调试初探溢出原理</h1><p>还是上面的那个程序，动态调试一波，搞一波事情，看看溢出的流程具体是如何实现。</p>
+<h1 id="动态调试初探溢出原理"><a href="#动态调试初探溢出原理" class="headerlink" title="动态调试初探溢出原理"></a>动态调试初探溢出原理</h1><p>还是上面的那个程序，动态调试一波，搞一波事情，看看溢出的流程具体是如何实现。</p>
 <p>使用OD载入，进行调试后找到main()函数里面，如下图位置：</p>
 <p><img src="http://ww1.sinaimg.cn/large/006jDttTly1fm0ddaxgmmj30kz0b5gm2.jpg" alt=""></p>
 <p>当程序步过地址为0x0040103E的位置时，程序会运行，提示需要执行输入命令，这也就是scanf()函数的地方，通过分析栈中的参数可以看出，输入的内容实际是存放在地址为0x0019FF3C的位置上的，输入十进制的65535，也就是十六进制的0x0000FFFF,然后再来看一下栈空间里面变化：</p>
@@ -436,7 +436,7 @@ int main()
 <p><img src="http://ww1.sinaimg.cn/large/006jDttTly1fm0dek9f7fj30ax05t3yk.jpg" alt=""></p>
 <p>从上面图中可以看出来，输入65536后地址0x0040103E中存储的数据变成0x00010000，这样的话，在edx和0xFFFF进行与运算时，它的前十六位就会被舍去，只剩下0x0000，这也就是为什么会输出0。</p>
 <p>这就是一个简单的整数溢出过程。</p>
-<h1 id="0x02-常见的整数溢出类型"><a href="#0x02-常见的整数溢出类型" class="headerlink" title="0x02 常见的整数溢出类型"></a>0x02 常见的整数溢出类型</h1><p>常见的整数溢出主要由三类整数操作引起的：无符号整数的下溢和上溢、符号问题和截断问题。</p>
+<h1 id="常见的整数溢出类型"><a href="#常见的整数溢出类型" class="headerlink" title="常见的整数溢出类型"></a>常见的整数溢出类型</h1><p>常见的整数溢出主要由三类整数操作引起的：无符号整数的下溢和上溢、符号问题和截断问题。</p>
 <p><strong>无符号整数的下溢和上溢</strong></p>
 <p>无符号整数的下溢由于无符号整数没能识别负数造成的：</p>
 <pre><code>BOOL fun(size_t cbSize)    
@@ -478,7 +478,7 @@ int main()
 <p>截断问题，也就是上面第一个例子中的情况，大多是因为高位数的整数要复制或者填充到低位数的整数中，进而造成的溢出。</p>
 <p>因为当定义一个变量时，它在内存地址中的存储空间也就相应的固定，如果要将一个高位数存放在它的存储空间，这个内存空间肯定是不够用的，又因为这个变量的大小只有这么大，所以输出的只能是这个变量大小存储空间上的数据，这样高位数比这个变量多出来的几位就无法输出，操作数不是按照程序预计的进行，那么输出的结果也就会错误。</p>
 <p>其实这三种分类归结到底还是因为将太大的数放到不够大的空间导致的溢出现象，这三种类别的问题也是相互联系的，无符号整数的下溢和上溢是因为经过整数运算后截断问题，符号问题则是有可能是由整数运算引发的截断问题，说到底，还是因为计算机中有符号整数和无符号整数之间的转化以及一些不同数据类型导致会有整数溢出的发生。</p>
-<h1 id="0x03-整数溢出引出的问题"><a href="#0x03-整数溢出引出的问题" class="headerlink" title="0x03 整数溢出引出的问题"></a>0x03 整数溢出引出的问题</h1><p>上面也讲了一些整数溢出的原理性的东西，但是也不难看出，整数溢出很难发现，发现了造成溢出了却很难控制并为我们所利用，下面就讲一些能够运用整数溢出的地方。</p>
+<h1 id="整数溢出引出的问题"><a href="#整数溢出引出的问题" class="headerlink" title="整数溢出引出的问题"></a>整数溢出引出的问题</h1><p>上面也讲了一些整数溢出的原理性的东西，但是也不难看出，整数溢出很难发现，发现了造成溢出了却很难控制并为我们所利用，下面就讲一些能够运用整数溢出的地方。</p>
 <p>整数溢出属于缓冲区溢出的一种，泉哥把它分为基于栈的整数溢出和基于堆的整数溢出，个人觉得分为引起栈溢出的整数溢出和引起堆溢出的整数溢出更好一些，虽说不是很学术，但是对于新手来说更容易理解一些。也就是我们往往就是会通过利用整数溢出来控制缓冲区溢出进而实现我们的目的。</p>
 <p>总是感觉只是将整数溢出的原理有点不是很容易讲明白，下面就举两个泉哥书中的例子来说明一下这两种整数溢出的利用原理，通过实例来理清楚里面的运行机制。</p>
 <p><strong>下面是整数溢出引起栈溢出的示例代码：</strong></p>
@@ -761,7 +761,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-整数溢出基本原理"><span class="nav-number">1.</span> <span class="nav-text">0x00 整数溢出基本原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-动态调试初探溢出原理"><span class="nav-number">2.</span> <span class="nav-text">0x01 动态调试初探溢出原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-常见的整数溢出类型"><span class="nav-number">3.</span> <span class="nav-text">0x02 常见的整数溢出类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-整数溢出引出的问题"><span class="nav-number">4.</span> <span class="nav-text">0x03 整数溢出引出的问题</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#整数溢出基本原理"><span class="nav-number">1.</span> <span class="nav-text">整数溢出基本原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#动态调试初探溢出原理"><span class="nav-number">2.</span> <span class="nav-text">动态调试初探溢出原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见的整数溢出类型"><span class="nav-number">3.</span> <span class="nav-text">常见的整数溢出类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#整数溢出引出的问题"><span class="nav-number">4.</span> <span class="nav-text">整数溢出引出的问题</span></a></li></ol></div>
             
 
           </div>
