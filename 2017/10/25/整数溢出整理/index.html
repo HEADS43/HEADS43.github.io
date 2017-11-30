@@ -106,7 +106,12 @@
 <meta property="og:description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 0x00 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1flkqs10xdmj30dy0a474c.jpg">
-<meta property="og:updated_time" content="2017-11-17T00:00:11.802Z">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1fm0ddaxgmmj30kz0b5gm2.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1fm0ddlktvqj30s60huabi.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1fm0de2hu7cj30az03e3yf.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1fm0debmhu9j30en03ydfs.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1fm0dek9f7fj30ax05t3yk.jpg">
+<meta property="og:updated_time" content="2017-11-30T12:11:56.879Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="整数溢出漏洞原理及实例分析">
 <meta name="twitter:description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 0x00 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，">
@@ -420,7 +425,17 @@ int main()
 <p><img src="http://ww1.sinaimg.cn/large/006jDttTly1flkqs10xdmj30dy0a474c.jpg" alt=""></p>
 <p>可以看出，如果输入的数不超过65535时，程序都能正确的输出显示输入的数，但是当输入的数大于65535时，输出的结果就变得不正确，这就是溢出造成的结果，如果对溢出的数据进行精心构造，也就可以让程序按照我们的目的去运行。</p>
 <h1 id="0x01-动态调试初探溢出原理"><a href="#0x01-动态调试初探溢出原理" class="headerlink" title="0x01 动态调试初探溢出原理"></a>0x01 动态调试初探溢出原理</h1><p>还是上面的那个程序，动态调试一波，搞一波事情，看看溢出的流程具体是如何实现。</p>
-<p>由于编译器的问题，不能够编译出想要的结果，进而在调试过程中还有待改进，先留下大概步骤，挖坑日后补。<br>使用OD载入找到scanf函数对应的位置，通过分析堆栈中的参数，可知输入的内容会保存在eax寄存器中存放的地址内存中，然后我们会发现对比两次输入不一样，输入完后会进行一个取位运算，就是将输入的内容与0xFFFF相加，这也就是将地址上的低十六位取出舍弃高十六位的数据，然后进行输出。</p>
+<p>使用OD载入，进行调试后找到main()函数里面，如下图位置：</p>
+<p><img src="http://ww1.sinaimg.cn/large/006jDttTly1fm0ddaxgmmj30kz0b5gm2.jpg" alt=""></p>
+<p>当程序步过地址为0x0040103E的位置时，程序会运行，提示需要执行输入命令，这也就是scanf()函数的地方，通过分析栈中的参数可以看出，输入的内容实际是存放在地址为0x0019FF3C的位置上的，输入十进制的65535，也就是十六进制的0x0000FFFF,然后再来看一下栈空间里面变化：</p>
+<p><img src="http://ww1.sinaimg.cn/large/006jDttTly1fm0ddlktvqj30s60huabi.jpg" alt=""></p>
+<p><img src="http://ww1.sinaimg.cn/large/006jDttTly1fm0de2hu7cj30az03e3yf.jpg" alt=""></p>
+<p>从上图可以看到，输入的数据65535已经存储到刚刚的eax寄存器中，再向下执行程序：</p>
+<p><img src="http://ww1.sinaimg.cn/large/006jDttTly1fm0debmhu9j30en03ydfs.jpg" alt=""></p>
+<p>从上图中可以看到下面还有一些操作：先是将地址为0x0040103E中的数据复制给cx，再下面两条语句是将cx的内容辗转复制给edx寄存器，而edx寄存器则作为下面printf()函数的参数。但是通过源程序可知这个参数是无符号整形，也就是十六位，所以下面的操作就是将其与0xFFFF进行与运算，进而清空前十六位中的数据而保留后十六位中的数据，也就是将我们输入的数据的高十六位截去，只输出低十六位的数据。因为我们之前输入的是0xFFFF，只有后十六位的内容，所以对其并没有影响，下面将输入的数据变大进行第二次尝试，输入65536：</p>
+<p><img src="http://ww1.sinaimg.cn/large/006jDttTly1fm0dek9f7fj30ax05t3yk.jpg" alt=""></p>
+<p>从上面图中可以看出来，输入65536后地址0x0040103E中存储的数据变成0x00010000，这样的话，在edx和0xFFFF进行与运算时，它的前十六位就会被舍去，只剩下0x0000，这也就是为什么会输出0。</p>
+<p>这就是一个简单的整数溢出过程。</p>
 <h1 id="0x02-常见的整数溢出类型"><a href="#0x02-常见的整数溢出类型" class="headerlink" title="0x02 常见的整数溢出类型"></a>0x02 常见的整数溢出类型</h1><p>常见的整数溢出主要由三类整数操作引起的：无符号整数的下溢和上溢、符号问题和截断问题。</p>
 <p><strong>无符号整数的下溢和上溢</strong></p>
 <p>无符号整数的下溢由于无符号整数没能识别负数造成的：</p>
