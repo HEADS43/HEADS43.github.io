@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="溢出漏洞," />
+  <meta name="keywords" content="整数溢出," />
 
 
 
@@ -98,7 +98,7 @@
 
 
 <meta name="description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，所有位都是">
-<meta name="keywords" content="溢出漏洞">
+<meta name="keywords" content="整数溢出">
 <meta property="og:type" content="article">
 <meta property="og:title" content="整数溢出漏洞原理及实例分析">
 <meta property="og:url" content="http://lc.dropsec.xyz/2017/10/25/整数溢出整理/index.html">
@@ -111,7 +111,7 @@
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1fm0de2hu7cj30az03e3yf.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1fm0debmhu9j30en03ydfs.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006jDttTly1fm0dek9f7fj30ax05t3yk.jpg">
-<meta property="og:updated_time" content="2017-11-30T13:39:25.560Z">
+<meta property="og:updated_time" content="2017-12-07T13:06:26.970Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="整数溢出漏洞原理及实例分析">
 <meta name="twitter:description" content="注：文中代码除了最后两段来自泉哥的《漏洞战争：软件漏洞分析精要》，其余均来自姜晔大神的缓冲区溢出系列教程。 整数溢出基本原理整数溢出，其实是缓冲区溢出的一种特殊形式，和其他类型的缓冲区溢出的基本原理相同的，整数溢出形成也是因为将数据放入了比它小的存储空间导致的。 在计算机中，整数分为有符号整数和无符号整数，其中有符号整数会在最高位用0表示正数，用1表示负数，而无符号整数就没有这个符号位，所有位都是">
@@ -553,7 +553,7 @@ int main(int argc,char * argv)
       
         <div class="post-tags">
           
-            <a href="/tags/溢出漏洞/" rel="tag"># 溢出漏洞</a>
+            <a href="/tags/整数溢出/" rel="tag"># 整数溢出</a>
           
         </div>
       
@@ -576,8 +576,8 @@ int main(int argc,char * argv)
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/11/20/Hook技术初探/" rel="prev" title="Hook技术初探">
-                Hook技术初探 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/10/28/整数溢出题目WP/" rel="prev" title="关于一道整数溢出pwn题分析">
+                关于一道整数溢出pwn题分析 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -686,7 +686,7 @@ var jiathis_config={
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -699,7 +699,7 @@ var jiathis_config={
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

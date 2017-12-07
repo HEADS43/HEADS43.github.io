@@ -314,6 +314,163 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lc.dropsec.xyz/2017/02/04/Reserve系列题目浅析（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HEADS43">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HEADS43">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/02/04/Reserve系列题目浅析（一）/" itemprop="url">Reserve系列题目浅析（一）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-04T12:02:03+08:00">
+                2017-02-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/02/04/Reserve系列题目浅析（一）/" class="leancloud_visitors" data-flag-title="Reserve系列题目浅析（一）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><strong>0x00  花指令(Junk code)的介绍</strong></p>
+<p>　　所谓花指令，人如其名，它就是一些混淆人们视线的指令，一般就是混在正常指令，正常运行时是永远不会运行到的代码块，但是当你去反汇编它是，因为反编译器不会是判断，会导致反编译出来的代码永远不正确，进而使得反汇编过程不能够如期进行。<br>例如如下的程序中：</p>
+<pre>
+#include &lt;iostream.h&gt;
+#include &lt;windows.h&gt;
+void main()
+{
+    _asm
+    {
+            jmp l2
+        _EMIT 0x1//这里就是花指令
+        _EMIT 0x2//这里就是花指令
+        _EMIT 0x3//这里就是花指令
+        _EMIT 0x4//这里就是花指令
+l2:
+        mov eax,0x11111111
+    }
+}
+
+
+</pre>
+
+<p>　　反编译器在反编译的时候不会像我们人一样去理解jmp和l2之间的指令是永远不会执行到的，所以在反编译的时候就把这段乱七八糟的代码作为正常的指令了，而这样的反编译会影响mov eax,0x11111111这个指令的正确识别，所以导致在OD中以上代码不会正确显示。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/02/04/Reserve系列题目浅析（一）/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://lc.dropsec.xyz/2017/01/20/合天实验室《pwn基础练习》学习总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -625,7 +782,7 @@
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -638,7 +795,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
